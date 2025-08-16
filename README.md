@@ -33,7 +33,6 @@ You’ll need an Octopus Energy account to get started. Don’t have one yet? Sw
 Simple instance:
 ```bash
 docker run -d --name=aglie-home-dashboard --restart unless-stopped 
-v /My/Downloads/Folder/:/downloads \
 -p 80:80
 j4ym0/agile-home-dashboard
 ```
