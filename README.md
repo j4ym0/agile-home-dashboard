@@ -71,9 +71,11 @@ Note that you can:
 ## TODO
 
  - Add smartlife support
+ - Add telegram support
  - Add live data from home mini
  - Price triggers for smartlife
  - import meter data 
+ - Multiple reports
 
 ## Issues and features 
 
