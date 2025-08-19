@@ -32,25 +32,35 @@ You’ll need an Octopus Energy account to get started. Don’t have one yet? Sw
 
 Simple instance:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped 
--p 80:80
+docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+-p 80:80 \
 j4ym0/agile-home-dashboard
 ```
 
 Custom configuration file:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped 
+docker run -d --name=aglie-home-dashboard --restart unless-stopped \
 -v /My/Datbase/Folder/config.php:/var/www/html/config.php \
--p 80:80
+-p 80:80 \
 j4ym0/agile-home-dashboard
 ```
 
 Persistent database volume:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped 
+docker run -d --name=aglie-home-dashboard --restart unless-stopped \
 -v /My/Datbase/Folder/config.php:/var/www/html/config.php \
 -v /My/Datbase/Folder/:/database \
--p 80:80
+-p 80:80 \
+j4ym0/agile-home-dashboard
+```
+
+Override custom config:
+```bash
+docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+-v /My/Datbase/Folder/config.php:/var/www/html/config.php \
+-v /My/Datbase/Folder/:/database \
+-e "SECURE_LOGIN=true"
+-p 80:80 \
 j4ym0/agile-home-dashboard
 ```
 
