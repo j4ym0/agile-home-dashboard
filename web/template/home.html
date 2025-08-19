@@ -1,0 +1,50 @@
+<div class="content">
+    <date class="right">
+        <div class="date-box">
+            <a href="/home?date=<?= $date_picker_back ?>"><div class="arrow border-right" id="prev-arrow">&larr;</div></a>
+            <div class="date-display" id="date-display"><?= $date_picker_today->format('l jS F') ?>
+                <input type="hidden" name="current_date" id="current_date" value="<?= $date_picker_today->format('Y-m-d')?>" />
+            </div>
+            <a href="/home?date=<?= $date_picker_forward ?>"><div class="arrow border-left" id="next-arrow">&rarr;</div></a>
+        </div>
+    </date>
+    <h1>Dashboard</h1>
+<?php if (!$is_setup): ?>
+    <div class="message">
+        <p style="padding-top: 20px;">Please setup you API Key and account in the <a href="/settings">Settings</a> tab</p>
+    </div>
+<?php else: ?>
+    <div class="card-scroller">
+        <div class="cards">
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">The total amount of electricity used in (kilowatt per hour)</span></div></div>
+                <div class="header">Total consumption</div>
+                <div class="data" id="electricity_total_consumption"><div class="spin"></div></div>
+            </div>
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">How much the electricity consumption add's up to excluding the standing charge</span></div></div>
+                <div class="header">Total Cost</div>
+                <div class="data" id="electricity_total_cost"><div class="spin"></div></div>
+            </div>
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">Electricity that was 0p or octopus pay you to use</span></div></div>
+                <div class="header">Free or Plunge Usage</div>
+                <div class="data" id="electricity_total_plunge_consumption"><div class="spin"></div></div>
+            </div>
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">How much of your electricity usage is below the average rate for the day (higher is better)</span></div></div>
+                <div class="header">Usage Below Average</div>
+                <div class="data" id="electricity_consumption_below_average"><div class="spin"></div></div>
+            </div>
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">Estimated cost compared to a standard tariff</span></div></div>
+                <div class="header">Cost on Standard tariff</div>
+                <div class="data" id="electricity_compare_standard_tariff"><div class="spin"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard_graph" id="dashboard_graph"><div class="spin"></div></div>
+    <div class="price_list" id="price_list"></div>
+<?php endif; ?>
+</div>

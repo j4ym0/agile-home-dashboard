@@ -1,0 +1,30 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $page_title ?></title>
+    <script src="https://kit.fontawesome.com/249fecb067.js" crossorigin="anonymous"></script>
+<?php if (isset($relLinks)):
+    foreach ($relLinks as $link): 
+        if ($link['rel'] != 'javascript'):?>
+    <link rel="<?= htmlspecialchars($link['rel']) ?>" href="<?= htmlspecialchars($link['href']) ?>">
+<?php   else: ?>
+    <script src="<?= htmlspecialchars($link['href']) ?>"></script>
+<?php   endif;
+    endforeach;
+endif; ?>
+</head>
+<body>
+    <?= $sidebar ?>
+    <div class="main-content">
+        <?= $content ?>
+    </div>
+</body>
+<?php if (isset($postRelLinks)):
+    foreach ($postRelLinks as $link): 
+        if ($link['rel'] == 'javascript'):?>
+<script src="<?= htmlspecialchars($link['href']) ?>"></script>
+<?php   endif;
+    endforeach;
+endif; ?>
+</html>

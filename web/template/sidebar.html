@@ -1,0 +1,33 @@
+<div id="notification-container" class="notification-container"></div>
+<div class="sidebar">
+    <div class="sidebar-head">
+        <img src="/template/img/logo.png" alt="Dashboard">
+        <span class="sidebar-text"><?= $APP_NAME ?></span>
+    </div>
+    <ul class="sidebar-nav">
+        <li>
+            <a href="/home" class="sidebar-item<?php if ($endpoint == 'home'){ echo ' active';} ?>">
+                <i class="fas fa-home sidebar-icon"></i>
+                <span class="sidebar-text">Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/settings" class="sidebar-item<?php if ($endpoint == 'settings'){ echo ' active';} ?>">
+                <i class="fas fa-sliders sidebar-icon"></i>
+                <span class="sidebar-text">Settings</span>
+            </a>
+        </li>
+    <?php if ($SECURE_LOGIN): ?>
+        <li>
+            <a href="/logout" class="sidebar-item">
+                <i class="fas fa-right-from-bracket sidebar-icon"></i>
+                <span class="sidebar-text">Logout</span>
+            </a>
+        </li>
+    <?php endif ?>
+    </ul>
+    <footer>
+        <?= $APP_NAME ?> v<?= $APP_VERSION ?>
+    </footer>
+
+</div>

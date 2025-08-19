@@ -1,0 +1,72 @@
+<div class="settings-container content">
+    <div class="setting-content">
+        <header>Data Settings</header>
+        <main>
+            <label class="toggle-container">
+                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Save tariff data to database</span>
+            </label>
+            <label class="toggle-container">
+                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Save standard tariff data to database</span>
+            </label>
+            <label class="toggle-container">
+                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Save consumption data to database</span>
+            </label>
+        </main>
+    </div>
+    <div class="setting-content">
+        <header>Octopus API Key</header>
+        <main>
+            <form id="api_info" data-endpoint="/save" data-update="/get/settings_octopus_account_info">
+                <label for="account_number" class="input_label">Account Number found on you account page <a href="https://octopus.energy/dashboard/new/accounts" target="_blank">here</a></label>
+                <input type="text" name="account_number" id="account_number" value="<?= $account_number ?>" placeholder="A-">
+                <label for="api_key" class="input_label">Octopus API Key</label>
+                <input type="text" name="api_key" id="api_key" value="<?= $api_key ?>" placeholder="API Key">
+                <p>
+                    *You can find your API information <a href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" target="_blank">here</a>
+                </p>
+                <button class="api-key-button" type="submit">Save</button>
+            </form>
+        </main>
+    </div>
+    <div class="setting-content">
+        <header>Octopus Account Info</header>
+        <main>
+            <p>
+                You may need to click update from time to time if something in your account changes
+            </p>
+            <label for="electricity_meter_MPAN" class="input_label">Your electricity meterpoint's MPAN</label>
+            <input type="text" name="electricity_meter_MPAN" id="electricity_meter_MPAN" value="<?= $electricity_meter_MPAN ?>" placeholder="-" disabled>
+            <label for="electricity_meter_serial" class="input_label">Your electricity meter's serial number</label>
+            <input type="text" name="electricity_meter_serial" id="electricity_meter_serial" value="<?= $electricity_meter_serial ?>" placeholder="-" disabled>
+            <label for="electricity_product_code" class="input_label">Electricity Product Code</label>
+            <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
+            <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
+            <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
+            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/get">Update</button>
+        </main>
+    </div>
+    <?php if ($SECURE_LOGIN): ?>
+    <div class="setting-content">
+        <header>Login Management</header>
+        <main>
+            <p>
+                Enter the username and password of the account you wish to add or delete.
+            </p>
+            <form id="account" data-endpoint="/save">
+                <label for="username" class="input_label">Username for the account</label>
+                <input type="text" name="username" id="username" value="" placeholder="username">
+                <label for="password" class="input_label">Account password min 3 characters (Must match account if deleting user)</label>
+                <input type="password" name="password" id="password" value="" placeholder="password" minlength="3">
+                <button class="login-add-button" id="login-add-button" name="submit_type" type="submit" value="create_account">Add User</button>
+                <button class="login-delete-button" id="login-delete-button" name="submit_type" type="submit" value="delete_account">Delete User</button>
+            </form>
+        </main>
+    </div>
+    <? endif ?>
+</div>
