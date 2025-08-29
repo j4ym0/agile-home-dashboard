@@ -101,7 +101,7 @@ class Octopus{
                 $productCode = $matches[1]; // AGILE-24-10-01
             }
             $electricityTariffs = [
-                    'electricity_product_code' => $productCode,
+                    'electricity_product_code' => $productCode ?? '',
                     'electricity_tariff_code' => $tariffCode
             ];
             
