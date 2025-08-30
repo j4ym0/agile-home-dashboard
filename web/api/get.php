@@ -147,23 +147,33 @@ function dashboard_data(){
         $electricity_total_plunge_cost = 0;
         $electricity_total_plunge_consumption = 0;
         $electricity_below_average = 0;
+
         if (count($consumption['electricity']) >= count($tariff['tariff'])){
             for ($i = 0; $i < count($consumption['electricity']); $i++) {
                 // check it is the same time
-                // TODO if tarif date mismatch find it
-                if(new DateTime($tariff['tariff'][$i]['valid_from']) == new DateTime($consumption['electricity'][$i]['interval_start'])){
-                    $electricity_total_cost += $tariff['tariff'][$i]['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
-                    if ($tariff['tariff'][$i]['price_inc_vat'] <= 0){
-                        $electricity_total_plunge_cost += $tariff['tariff'][$i]['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
-                        $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];
+                // TODO if tariff date mismatch find it
+                $the_tariff = $tariff['tariff'][count($tariff['tariff'])-1];
+                if (count($tariff['tariff']) > $i){
+                    $the_tariff = $tariff['tariff'][$i];
+                }
+                if(new DateTime($the_tariff['valid_from']) != new DateTime($consumption['electricity'][$i]['interval_start'])){
+                    for ($t = 0; $t < count($tariff['tariff']); $t++) {
+                        if(new DateTime($tariff['tariff'][$t]['valid_from']) != new DateTime($consumption['electricity'][$i]['interval_start'])){
+                            $the_tariff = $tariff['tariff'][$t];
+                        }
                     }
-                    if ($tariff['tariff'][$i]['price_inc_vat'] <= 0){
-                        $electricity_total_plunge_cost += $tariff['tariff'][$i]['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
-                        $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];
-                    }
-                    if ($tariff['tariff'][$i]['price_inc_vat'] < $ret['average_price_inc_vat']){
-                        $electricity_below_average += $consumption['electricity'][$i]['consumption'];
-                    }
+                }
+                $electricity_total_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
+                if ($the_tariff['price_inc_vat'] <= 0){
+                    $electricity_total_plunge_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
+                    $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];
+                }
+                if ($the_tariff['price_inc_vat'] <= 0){
+                    $electricity_total_plunge_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
+                    $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];
+                }
+                if ($the_tariff['price_inc_vat'] < $ret['average_price_inc_vat']){
+                    $electricity_below_average += $consumption['electricity'][$i]['consumption'];
                 }
             }
         }

@@ -99,6 +99,9 @@ class Octopus{
             $tariffCode = $currentAgreement['tariff_code'];
             if (preg_match('/-([A-Z]+-\d{2}-\d{2}-\d{2})-/i', $tariffCode, $matches)) {
                 $productCode = $matches[1]; // AGILE-24-10-01
+            }elseif (preg_match('/^E-1R-(.+)-M$/', $tariffCode, $matches)) {
+                // For standard tariff
+                $productCode = $matches[1]; // OE-VAR-24-12-14
             }
             $electricityTariffs = [
                     'electricity_product_code' => $productCode ?? '',
@@ -222,7 +225,7 @@ class Octopus{
             $results[] = [
                 'price_inc_vat' => $item['value_inc_vat'],
                 'valid_from' => new DateTime($item['valid_from'])->setTimezone(new DateTimeZone('UTC'))->format('c'),
-                'valid_to' => new DateTime($item['valid_to'])->setTimezone(new DateTimeZone('UTC'))->format('c')
+                'valid_to' => new DateTime($item['valid_to'] == '' ? new DateTime('tomorrow')->format('Y-m-d H:i:s') : $item['valid_to'])->setTimezone(new DateTimeZone('UTC'))->format('c')
             ];
             $average_price += $item['value_inc_vat'];
         } 

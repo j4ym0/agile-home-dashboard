@@ -1,3 +1,9 @@
+const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+};
+
 async function getPriceList(data) {
     // Get the container where we'll put our list
     const listContainer = document.getElementById('price_list');
@@ -8,6 +14,14 @@ async function getPriceList(data) {
 
     html = '';
 
+    if (data.tariff.length == 1){
+        startDate = new Date(data.tariff[0]['valid_from']);
+        for (let i = 1; i < 48; i++) {
+            intervalDate = new Date(data.tariff[0].valid_from);
+            intervalDate.setMinutes(startDate.getMinutes() + (i * 30));
+            data.tariff.push({valid_from : intervalDate.toISOString(), price_inc_vat: data.tariff[0].price_inc_vat});
+        }
+    }
     // Process each item in the response
     data.tariff.forEach(item => {
         // Format the date if needed (assuming valid_from is a timestamp)
@@ -49,27 +63,37 @@ async function makeDashboardGraph(data) {
         return;
     }
 
-    // Time options
-    const options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    };
-
-    data.tariff.forEach(item => {
-        x.push(new Date(item['valid_from']).toLocaleTimeString([], options));
-        y.push(item['price_inc_vat']);
-        a.push(data.average_price_inc_vat);
-        standard_tariff.push(data.electricity_standard_tariff[0].value_inc_vat);
-    });
+    if (data.tariff.length > 1){
+        data.tariff.forEach(item => {
+            x.push(new Date(item['valid_from']).toLocaleTimeString([], options));
+            y.push(item['price_inc_vat']);
+            a.push(data.average_price_inc_vat);
+            standard_tariff.push(data.electricity_standard_tariff[0].value_inc_vat);
+        });
+    }else{
+        startDate = new Date(data.tariff[0]['valid_from']);
+        for (let i = 0; i < 48; i++) {
+            intervalDate = new Date(startDate);
+            intervalDate.setMinutes(startDate.getMinutes() + (i * 30));
+            x.push(intervalDate.toLocaleTimeString([], options));
+            y.push(data.tariff[0]['price_inc_vat']);
+            a.push(data.average_price_inc_vat);
+            standard_tariff.push(data.electricity_standard_tariff[0].value_inc_vat);
+        };
+    }
     data.electricity.forEach((item, i) => {
         c.push(item['consumption']);
-        electric_cost.push((data.tariff[i].price_inc_vat / 100) * item['consumption']);
+        t = data.tariff[data.tariff.length - 1];
+        if (data.tariff.length > i){
+            t = data.tariff[i];
+        }
+        electric_cost.push((t.price_inc_vat / 100) * item['consumption']);
     });
 
     x.push(' '+(new Date(data.tariff[data.tariff.length-1]['valid_to'])).toLocaleTimeString([], options));
     y.push(data.tariff[data.tariff.length-1]['price_inc_vat']);
     a.push(data.average_price_inc_vat);
+    standard_tariff.push(data.electricity_standard_tariff[0].value_inc_vat);
     graphContainer.innerHTML = '';
     makeGraph(graphContainer, x, y, a, c, electric_cost, standard_tariff);
 }
