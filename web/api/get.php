@@ -127,6 +127,25 @@ function standard_tariff(){
 
     return $ret;
 }
+function current_consumption(){
+    global $settings, $db;
+    $ret = ['error' => false,
+            'message' => ''];
+    $date = $_GET['date'];
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+        $ret['error'] = true;
+        $ret['message'] = 'Unable to validate date';
+    }else{
+        $octopus = new Octopus($db, $settings);
+        $octopusTelematryData = $octopus->getHomeTelemetry($octopus->getDeviceID());
+
+        if (count($octopusTelematryData) > 0){
+            $ret['electricity_current_consumption'] = ($octopusTelematryData[count($octopusTelematryData)-1]['demand']  / 1000);
+        }   
+    }
+    return $ret;
+}
 function dashboard_data(){
     $ret = ['error' => false,
             'message' => ''];
@@ -140,7 +159,8 @@ function dashboard_data(){
         $tariff = price_list();
         $standardTariff = standard_tariff();
         $consumption = electric_usage();
-        $ret = array_merge($tariff, $standardTariff, $consumption);
+        $current_consumption = current_consumption();
+        $ret = array_merge($tariff, $standardTariff, $consumption, $current_consumption);
 
         // Calculate the electric cost
         $electricity_total_cost = 0;

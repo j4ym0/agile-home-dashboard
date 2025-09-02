@@ -26,6 +26,62 @@ function showNotification(m) {
         }, 500);
     }, 12000);
 }
+function createActiveTimerEvent(callback, interval = 10000) {
+    let lastExecution = 0;
+    let rafId = null;
+    let isActive = true;
+    
+    const checkAndExecute = (timestamp) => {
+        if (!isActive) {
+            rafId = null;
+            return;
+        }
+        
+        if (timestamp - lastExecution >= interval) {
+            lastExecution = timestamp;
+            try {
+                callback();
+            } catch (error) {
+                console.error('Callback error:', error);
+            }
+        }
+        
+        rafId = requestAnimationFrame(checkAndExecute);
+    };
+    
+    const start = () => {
+        if (!rafId && isActive) {
+            lastExecution = performance.now();
+            rafId = requestAnimationFrame(checkAndExecute);
+        }
+    };
+    
+    const stop = () => {
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    };
+    
+    const handleVisibilityChange = () => {
+        isActive = document.visibilityState === 'visible';
+        if (isActive) {
+            start();
+        } else {
+            stop();
+        }
+    };
+    
+    // Set up listeners
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', () => { isActive = true; start(); });
+    window.addEventListener('blur', () => { isActive = false; stop(); });
+    
+    // Start initially
+    start();
+    
+    return { stop: () => { stop(); isActive = false; } };
+}
 async function updateElements(endpoint){
     try {
         const response = await fetch(endpoint, {

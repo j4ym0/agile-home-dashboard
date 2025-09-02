@@ -2,8 +2,8 @@
     <date class="right">
         <div class="date-box">
             <a href="/home?date=<?= $date_picker_back ?>"><div class="arrow border-right" id="prev-arrow">&larr;</div></a>
-            <div class="date-display" id="date-display"><?= $date_picker_today->format('l jS F') ?>
-                <input type="hidden" name="current_date" id="current_date" value="<?= $date_picker_today->format('Y-m-d')?>" />
+            <div class="date-display" id="date-display"><?= $date_picker_day->format('l jS F') ?>
+                <input type="hidden" name="current_date" id="current_date" value="<?= $date_picker_day->format('Y-m-d')?>" />
             </div>
             <a href="/home?date=<?= $date_picker_forward ?>"><div class="arrow border-left" id="next-arrow">&rarr;</div></a>
         </div>
@@ -16,6 +16,13 @@
 <?php else: ?>
     <div class="card-scroller">
         <div class="cards">
+        <?php if ($home_mini_live_data): ?>
+            <div class="card">
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">The amount of electricity currently been used in (kilowatt per hour). Refreshed every 10 seconds</span></div></div>
+                <div class="header">Current consumption</div>
+                <div class="data" id="electricity_current_consumption"><div class="spin"></div></div>
+            </div>
+        <?php endif; ?>
             <div class="card">
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">The total amount of electricity used in (kilowatt per hour)</span></div></div>
                 <div class="header">Total consumption</div>

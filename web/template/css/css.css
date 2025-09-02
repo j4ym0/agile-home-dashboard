@@ -238,6 +238,7 @@ button[disabled] {
     position: relative;
     gap: 10px;
     margin-top: 10px;
+    width: 100%;;
 }
 .toggle-checkbox {
     visibility: hidden;
@@ -288,6 +289,7 @@ button[disabled] {
     font-size: 14px;
     color: #ccc;
     user-select: none;
+    margin-top: 3px;;
 }
 
 .help{

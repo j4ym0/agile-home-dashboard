@@ -1,13 +1,15 @@
 <?php
 
 class Octopus{
-    private $url = 'https://api.octopus.energy/v1';
+    private $restAPI = 'https://api.octopus.energy/v1';
+    private $graphQL = 'https://api.octopus.energy/v1/graphql/';
     private $settings;
     private $db;
     private $save_tariff_data = false;
     private $save_consumption_data = false;
     private $save_standard_tariffs = false;
     private $apiKey = '';
+    private $graphToken = '';
     private $accountNumber = '';
 
     public function __construct($database, $settings) {
@@ -34,7 +36,7 @@ class Octopus{
             throw new RuntimeException('Failed to initialize cURL');
         }
         try {
-            $Url = $this->url . rtrim($apiEndpoint, '/')  . '/';
+            $Url = $this->restAPI . rtrim($apiEndpoint, '/')  . '/';
 
             // Check for URL parameters
             if (!empty($prams)) {
@@ -82,6 +84,72 @@ class Octopus{
         } finally {
             curl_close($ch); // Ensure cURL handle is always closed
         }
+    }
+    private function queryGraphQL($query){
+        // Initialize cURL handle that we'll reuse
+        $ch = curl_init();
+        if ($ch === false) {
+            throw new RuntimeException('Failed to initialize cURL');
+        }
+        try {
+
+            if (empty($this->graphToken)){
+                $this->getGraphToken();
+            }
+
+            // Make sure we have a query
+            if (!empty($query) && !empty($this->graphToken)) {
+
+                curl_setopt($ch, CURLOPT_URL, $this->graphQL);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/json',
+                    'Authorization: JWT ' . $this->graphToken
+                ]);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $Response = curl_exec($ch);
+                if ($Response === false) {
+                    throw new RuntimeException('cURL error: ' . curl_error($ch));
+                }
+
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                if ($httpCode !== 200) {
+                    throw new RuntimeException("API request failed with HTTP code: $httpCode");
+                }
+
+                $Data = json_decode($Response, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new RuntimeException('Failed to decode JSON response');
+                }
+
+                // Return the decoded json data
+                return $Data;
+            }
+        } finally {
+            curl_close($ch); // Ensure cURL handle is always closed
+        }
+    }
+    private function getGraphToken(){
+        $query = [
+            "query" => 'mutation { obtainKrakenToken(input: {APIKey: "' . $this->apiKey . '"}) { token } }'
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->graphQL);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($query));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
+        $data = json_decode($response, true);
+        $this->graphToken = $data['data']['obtainKrakenToken']['token'];
     }
 
     public function getCurrentTariffFromAccount(): ?array {
@@ -320,5 +388,54 @@ class Octopus{
 
         // Add the average cost to the results
         return ['electricity_standard_tariff' => $results];
+    }
+    public function getDeviceID() {
+        $query = [
+            "query" => '
+                query {
+                    account(accountNumber: "' . $this->accountNumber . '") {
+                        electricityAgreements(active: true) {
+                            meterPoint {
+                                meters(includeInactive: false) {
+                                    smartDevices {
+                                        deviceId
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            '
+        ];
+        
+        $data = $this->queryGraphQL($query);
+        return $data['data']['account']['electricityAgreements'][0]['meterPoint']['meters'][0]['smartDevices'][0]['deviceId'];
+    }
+    public function getHomeTelemetry($device_id) {
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+        $start = (clone $now)->sub(new DateInterval('PT1M'))->format('c');
+        $end = $now->format('c');
+        
+        $query = [
+            "query" => '
+                query {
+                    smartMeterTelemetry(
+                        deviceId: "' . $device_id . '"
+                        grouping: TEN_SECONDS
+                        start: "' . $start . '"
+                        end: "' . $end . '"
+                    ) {
+                        readAt
+                        consumptionDelta
+                        demand
+                        consumption
+                    }
+                }
+            '
+        ];
+        
+        $data = $this->queryGraphQL($query);
+
+        return $data['data']['smartMeterTelemetry'];
     }
 }

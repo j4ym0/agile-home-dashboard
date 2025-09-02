@@ -28,4 +28,5 @@ $template->assign('electricity_tariff_code', $settings->get('electricity_tariff_
 $template->assign('save_tariff_data', $settings->get('save_tariff_data', false) ? 'checked' : '');
 $template->assign('save_consumption_data', $settings->get('save_consumption_data', false) ? 'checked' : '');
 $template->assign('save_standard_tariff_data', $settings->get('save_standard_tariff_data', false) ? 'checked' : '');
+$template->assign('home_mini_live_data', $settings->get('home_mini_live_data', false) ? 'checked' : '');
 

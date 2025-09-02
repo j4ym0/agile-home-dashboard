@@ -177,6 +177,11 @@ function makeGraph(graphContainer, x, y, a, c, electric_cost, standard_tariff){
     });
 }
 function updateCardData(data){
+    e = document.getElementById('electricity_current_consumption');
+    if (e && "electricity_current_consumption" in data){
+        createActiveTimerEvent(async () => {await update_current_consumption()}, 10000);
+        e.innerHTML = data.electricity_current_consumption + ' kWh';
+    }
     e = document.getElementById('electricity_total_consumption');
     if (e && "electricity_total_consumption" in data){
         e.innerHTML = data.electricity_total_consumption + ' kWh';
@@ -198,7 +203,20 @@ function updateCardData(data){
         e.innerHTML = '£' + ((data.electricity_standard_tariff[0].value_inc_vat / 100.0) * data.electricity_total_consumption).toFixed(2);
     }
 }
-
+async function update_current_consumption(){
+    e = document.getElementById('electricity_current_consumption');
+    if (e){
+        e.innerHTML = '<div class="spin"></div>';
+        const response = await fetch('/get/current_consumption?date='+document.getElementById('current_date').value);
+        if (!response.ok) {
+            showNotification(`Unable to update current consumption!<br/>Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if ("electricity_current_consumption" in data){
+            e.innerHTML = data.electricity_current_consumption + ' kWh';
+        }
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Fetch data from API

@@ -1,6 +1,4 @@
 <?php
-$version = '0.0.1';
-
 // Include required files
 require_once 'core/config.php';
 require_once 'core/text.php';

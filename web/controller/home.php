@@ -11,12 +11,14 @@ if (isset($_GET['date'])){
     $url_params   = "&date=" . $_GET["date"];
     $date         = new datetime($_GET["date"]);
 }
-$today      = clone $date;
+$day      = clone $date;
 $back       = $date->modify('-1 day')->format('Y-m-d');
 $forward    = $date->modify('+2 day')->format('Y-m-d');
+// Check if $date is now
+$is_now = ($day->format('Y-m-d') === (new DateTime())->format('Y-m-d'));
 
 $template->assign('date_picker_back', $back);
-$template->assign('date_picker_today', $today);
+$template->assign('date_picker_day', $day);
 $template->assign('date_picker_forward', $forward);
 
 // Check if API key is entered
@@ -24,4 +26,9 @@ $template->assign('is_setup', true);
 if (($settings->get('api_key', '') == '' && $settings->get('account_number', '') == '') || 
         !$settings->get('is_setup', false)) {
     $template->assign('is_setup', false);
+}
+
+$template->assign('home_mini_live_data', false);
+if ($is_now && $settings->get('home_mini_live_data', false)){
+    $template->assign('home_mini_live_data', true);
 }
