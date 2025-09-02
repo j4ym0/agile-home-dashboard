@@ -22,6 +22,7 @@ You’ll need an Octopus Energy account to get started. Don’t have one yet? Sw
 - Cost tracking
 - Tariff comparison with standard tariff
 - Easy visualise tariff pricing
+- Live current energy usage from Home Mini
 
 ## Screenshots
 
@@ -72,7 +73,6 @@ Note that you can:
 
  - Add smartlife support
  - Add telegram support
- - Add live data from home mini
  - Price triggers for smartlife
  - import meter data 
  - Multiple reports
