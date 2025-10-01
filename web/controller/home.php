@@ -32,3 +32,4 @@ $template->assign('home_mini_live_data', false);
 if ($is_now && $settings->get('home_mini_live_data', false)){
     $template->assign('home_mini_live_data', true);
 }
+

@@ -41,6 +41,21 @@
         </main>
     </div>
     <div class="setting-content">
+        <header>Smartlife API Key</header>
+        <main>
+            <form id="tuya_api" data-endpoint="/save">
+                <label for="tuya_access_id" class="input_label">Access ID/Client ID</label>
+                <input type="text" name="tuya_access_id" id="tuya_access_id" value="<?= $tuya_access_id ?>" placeholder="ID">
+                <label for="tuya_secret" class="input_label">Access Secret/Client Secret</label>
+                <input type="text" name="tuya_secret" id="tuya_secret" value="<?= $tuya_secret ?>" placeholder="Secret">
+                <p>
+                    * Create a project oin the cloud section of <a href="https://platform.tuya.com/cloud" target="_blank">iot.tuya.com</a>
+                </p>
+                <button class="api-key-button" type="submit">Save</button>
+            </form>
+        </main>
+    </div>
+    <div class="setting-content">
         <header>Octopus Account Info</header>
         <main>
             <p>

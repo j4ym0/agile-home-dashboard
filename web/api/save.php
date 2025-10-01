@@ -80,6 +80,48 @@ function api_info(){
     }
     return $ret;
 }
+function tuya_api(){
+    global $db;
+    global $settings;
+    $ret = ['error' 	=> false,
+            'message' 	=> 'Saved'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+        // Get and trim all input
+        $tuya_access_id = trim($_POST['tuya_access_id'] ?? '');
+        $tuya_secret = trim($_POST['tuya_secret'] ?? '');
+
+        // Prep for database insertion
+        $tuya_access_id = htmlspecialchars($tuya_access_id, ENT_QUOTES, 'UTF-8');
+        $tuya_secret = htmlspecialchars($tuya_secret, ENT_QUOTES, 'UTF-8');
+        
+        // Save to database
+        if (!$settings->set('tuya_access_id', $tuya_access_id)){
+            $ret['error'] = true;
+            $ret['message'] = 'Unable to save Access ID/Client ID';
+        }
+        if (!$settings->set('tuya_secret', $tuya_secret)){
+            $ret['error'] = true;
+            $ret['message'] = 'Unable to save your client secret';
+        }
+
+        try{
+            new Smartlife($db, $settings);
+            $settings->set('tuya_configured', true);
+        } catch (Exception $e){
+            $settings->set('tuya_configured', false);
+            $ret['error'] = true;
+            $ret['message'] = 'Tuya Error: ' . $e->getMessage();
+        }
+
+        
+    }else{
+        $ret['error'] = true;
+        $ret['message'] = 'Unknown error';
+    }
+    return $ret;
+}
 
 function save_setting(){
     global $settings;

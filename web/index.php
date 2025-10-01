@@ -7,6 +7,7 @@ require_once 'core/database.php';
 require_once 'core/auth.php';
 require_once 'core/settings.php';
 require_once 'core/octopus.php';
+require_once 'core/smartlife.php';
 require_once 'core/engine.php';
 
 // Init the config
@@ -109,6 +110,7 @@ $template->assign('SECURE_LOGIN', Config::get('SECURE_LOGIN'));
 $template->assign('APP_NAME', $APP_NAME);
 $template->assign('APP_VERSION', $APP_VERSION);
 $template->assign('relLinks', [['rel' => 'stylesheet', 'href' => '/template/css/css.css']]);
+$template->assign('tuya_configured', $settings->get('tuya_configured', false));
 
 // Run controller script
 try {
