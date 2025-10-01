@@ -91,6 +91,7 @@ function tuya_api(){
         // Get and trim all input
         $tuya_access_id = trim($_POST['tuya_access_id'] ?? '');
         $tuya_secret = trim($_POST['tuya_secret'] ?? '');
+        $tuya_account_uid = trim($_POST['tuya_account_uid'] ?? '');
 
         // Prep for database insertion
         $tuya_access_id = htmlspecialchars($tuya_access_id, ENT_QUOTES, 'UTF-8');
@@ -102,6 +103,10 @@ function tuya_api(){
             $ret['message'] = 'Unable to save Access ID/Client ID';
         }
         if (!$settings->set('tuya_secret', $tuya_secret)){
+            $ret['error'] = true;
+            $ret['message'] = 'Unable to save your client secret';
+        }
+        if (!$settings->set('tuya_account_uid', $tuya_account_uid)){
             $ret['error'] = true;
             $ret['message'] = 'Unable to save your client secret';
         }
