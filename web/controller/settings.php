@@ -27,6 +27,7 @@ $template->assign('electricity_tariff_code', $settings->get('electricity_tariff_
 
 $template->assign('tuya_access_id', $settings->get('tuya_access_id', ''));
 $template->assign('tuya_secret', $settings->get('tuya_secret', ''));
+$template->assign('tuya_account_uid', $settings->get('tuya_account_uid', ''));
 
 $template->assign('save_tariff_data', $settings->get('save_tariff_data', false) ? 'checked' : '');
 $template->assign('save_consumption_data', $settings->get('save_consumption_data', false) ? 'checked' : '');
