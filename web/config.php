@@ -3,7 +3,7 @@
 $CONFIG = array (
     'SECURE_LOGIN' => false,
     'database' => array (
-        'type' => 'sqlite',
+        'type' => 'mysql',
         'mysql' => array (
             'host' => '172.17.0.1',
             'dbname' => 'agile_dashboard',

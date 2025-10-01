@@ -11,12 +11,14 @@
                 <span class="sidebar-text">Dashboard</span>
             </a>
         </li>
+    <?php if ($tuya_configured): ?>
         <li>
-            <a href="/grid-inspect" class="sidebar-item<?php if ($endpoint == 'grid-inspect'){ echo ' active';} ?>">
-                <i class="fas fa-sliders sidebar-icon"></i>
-                <span class="sidebar-text">Grid Inspect</span>
+            <a href="/smartlife" class="sidebar-item<?php if ($endpoint == 'smartlife'){ echo ' active';} ?>">
+                <i class="fa-solid fa-house-signal"></i>
+                <span class="sidebar-text">Smartlife</span>
             </a>
         </li>
+    <?php endif ?>
         <li>
             <a href="/settings" class="sidebar-item<?php if ($endpoint == 'settings'){ echo ' active';} ?>">
                 <i class="fas fa-sliders sidebar-icon"></i>
