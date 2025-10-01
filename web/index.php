@@ -7,7 +7,7 @@ require_once 'core/database.php';
 require_once 'core/auth.php';
 require_once 'core/settings.php';
 require_once 'core/octopus.php';
-require_once 'core/smartlife.php';
+require_once 'core/tuya.php';
 require_once 'core/engine.php';
 
 // Init the config

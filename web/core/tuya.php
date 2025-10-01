@@ -1,6 +1,6 @@
 <?php
 
-class Smartlife{
+class Tuya{
     private $restAPI = 'https://openapi.tuyaeu.com'; // West Europe endpoint
     private $settings;
     private $db;
@@ -29,57 +29,55 @@ class Smartlife{
      * returns decoded json data
      * @throws RuntimeException
      */
-    private function fetchFromApi($apiEndpoint, $prams = [], $data = []){
+    private function fetchFromApi($apiEndpoint, $data = []){
+        if ($this->apiToken == ''){
+            throw new RuntimeException('No token');
+        }
+        
         // Initialize cURL handle that we'll reuse
         $ch = curl_init();
         if ($ch === false) {
             throw new RuntimeException('Failed to initialize cURL');
         }
         try {
-            $Url = $this->restAPI . rtrim($apiEndpoint, '/')  . '/';
-
-            // Check for URL parameters
-            if (!empty($prams)) {
-                $Url .= '?' . http_build_query($prams);
-            }
-
+            $timestamp = round(microtime(true) * 1000);
+            $nonce     = $this->generateUUID();
+            $sign = $this->generateSignature($timestamp, $nonce, $this->apiToken, $apiEndpoint);
+        
+            $headers = [
+                'client_id: ' . $this->apiId,
+                'access_token: ' . $this->apiToken,
+                'sign: ' . $sign,
+                'nonce: ' . $nonce,
+                't: ' . $timestamp,
+                "sign_method: HMAC-SHA256",
+                "Content-Type: application/json"
+            ];
+        
             $options = [
-                CURLOPT_URL => $Url,
+                CURLOPT_URL =>  $this->restAPI . $apiEndpoint,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_USERPWD => $this->apiKey,
-                CURLOPT_FAILONERROR => false, // We'll handle errors manually
+                CURLOPT_HTTPHEADER => $headers,
+                CURLOPT_TIMEOUT => 30,
             ];
 
             // Add POST data if exists
             if (!empty($data)) {
                 $options[CURLOPT_POST] = true;
                 $options[CURLOPT_POSTFIELDS] = is_array($data) ? json_encode($data) : $data;
-                
-                // If you need to send as form data instead of JSON:
-                // $options[CURLOPT_POSTFIELDS] = http_build_query($data);
-                // And change Content-Type to:
-                // 'Content-Type: application/x-www-form-urlencoded'
             }
 
             curl_setopt_array($ch, $options);
-
-            $Response = curl_exec($ch);
-            if ($Response === false) {
-                throw new RuntimeException('cURL error: ' . curl_error($ch));
-            }
-
+        
+            $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
             if ($httpCode !== 200) {
-                throw new RuntimeException("API request failed with HTTP code: $httpCode");
+                throw new Exception('HTTP: ' . $httpCode);
             }
 
-            $Data = json_decode($Response, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException('Failed to decode JSON response');
-            }
-
-            // Return the decoded json data
-            return $Data;
+            return json_decode($response, true);
 
         } finally {
             curl_close($ch); // Ensure cURL handle is always closed
@@ -152,6 +150,10 @@ class Smartlife{
         return strtoupper(hash_hmac('sha256', $stringToHash, $this->apiSecret));
     }
 
+    public function getDeviceList() {
 
+        $deviceList = $this->fetchFromApi('/v1.0/devices', '')
+        echo $deviceList;
+    }
 
 }
