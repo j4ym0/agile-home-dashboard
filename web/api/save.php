@@ -107,7 +107,7 @@ function tuya_api(){
         }
 
         try{
-            new Smartlife($db, $settings);
+            new Tuya($db, $settings);
             $settings->set('tuya_configured', true);
         } catch (Exception $e){
             $settings->set('tuya_configured', false);
