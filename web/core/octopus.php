@@ -39,7 +39,7 @@ class Octopus{
             $Url = $this->restAPI . rtrim($apiEndpoint, '/')  . '/';
 
             // Check for URL parameters
-            if (!empty($prams)) {
+            if (!empty($params)) {
                 $Url .= '?' . http_build_query($params);
             }
 
