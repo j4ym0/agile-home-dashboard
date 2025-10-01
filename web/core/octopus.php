@@ -29,7 +29,7 @@ class Octopus{
      * returns decoded json data
      * @throws RuntimeException
      */
-    private function fetchFromApi($apiEndpoint, $prams = [], $data = []){
+    private function fetchFromApi($apiEndpoint, $params = [], $data = []){
         // Initialize cURL handle that we'll reuse
         $ch = curl_init();
         if ($ch === false) {
@@ -40,7 +40,7 @@ class Octopus{
 
             // Check for URL parameters
             if (!empty($prams)) {
-                $Url .= '?' . http_build_query($prams);
+                $Url .= '?' . http_build_query($params);
             }
 
             $options = [
