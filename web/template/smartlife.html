@@ -1,0 +1,7 @@
+<?php if (isset($tuya_config_error)): ?>
+    <div class="message">
+        <p style="padding-top: 20px;">Smartlife is not configured correctly, go to <a href="/settings">Settings</a> tab and check the Smartlife API details.</p>
+    </div>
+<?php else: ?>
+    <div class="tuya_device_list"></div>
+<?php endif; ?>
