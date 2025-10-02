@@ -4,6 +4,7 @@ function getMinOrZeroOfArray(numArray) {return numArray.reduce((min, value) => M
 function roundUpToNearestTen(number) {return Math.ceil(number / 10) * 10;}
 function roundDownToNearestTen(number) {return Math.floor(number / 10) * 10;}
 function isDictArray(arr) {if (!Array.isArray(arr)) {return false;}return arr.every(item => typeof item === 'object' && item !== null && !Array.isArray(item));}
+function isNumber(value) {return typeof value === 'number' && !isNaN(value);}
 function addSpin(e){
     e.dataset.text = e.innerText; // Store original text
     e.innerHTML = '<div class="spin"></div>';

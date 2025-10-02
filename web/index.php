@@ -36,6 +36,7 @@ if (strpos($endpoint, 'js/') === 0) {
         is_readable($fullPath)
     ){
         header('Content-Type: application/javascript');
+        // check and skip min files
         if (strcmp(substr($fullPath, -3), ".js") === 0 &&
             substr($fullPath, -7) !== '.min.js'
         ){
