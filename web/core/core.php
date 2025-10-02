@@ -19,15 +19,28 @@ function secure_session_start($session_name, $secureCookie, $httpOnly) {
 // Make a min version of a .js file
 function minifyJsContent($scriptFilename) {
     $jsContent = file_get_contents($scriptFilename);
-    // Remove comments (both single-line and multi-line)
-    $minified = preg_replace('@/\*.*?\*/@s', '', $jsContent); // Multi-line comments
-    $minified = preg_replace('@//.*$@m', '', $minified);     // Single-line comments
+    
+    // Remove comments first
+    $minified = preg_replace('@/\*.*?\*/@s', '', $jsContent);
+    $minified = preg_replace('@//.*$@m', '', $minified);
 
-    // Remove whitespace
-    $minified = preg_replace('/\s+/', ' ', $minified);       // Multiple spaces to single space
-    $minified = preg_replace('/\s*([{}()\[\]<>|=;:,+\-*\/%])\s*/', '$1', $minified); // Around operators
-    $minified = preg_replace('/;}/', '}', $minified);        // Remove semicolons before closing braces
-    $minified = trim($minified);                             // Trim leading/trailing space
+    // Protect ALL string literals (both single and double quotes)
+    $minified = preg_replace_callback('/\'[^\']*\'/', function($matches) {
+        return str_replace(' ', '%%SPACE%%', $matches[0]);
+    }, $minified);
+    
+    $minified = preg_replace_callback('/\"[^\"]*\"/', function($matches) {
+        return str_replace(' ', '%%SPACE%%', $matches[0]);
+    }, $minified);
+
+    // Now do the aggressive whitespace removal
+    $minified = preg_replace('/\s+/', ' ', $minified);
+    $minified = preg_replace('/\s*([{}()\[\]<>|=;:,+\-*\/%])\s*/', '$1', $minified);
+    $minified = preg_replace('/;}/', '}', $minified);
+    $minified = trim($minified);
+
+    // Restore spaces in strings
+    $minified = str_replace('%%SPACE%%', ' ', $minified);
 
     return $minified;
 }
