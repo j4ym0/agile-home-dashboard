@@ -96,6 +96,7 @@ function tuya_api(){
         // Prep for database insertion
         $tuya_access_id = htmlspecialchars($tuya_access_id, ENT_QUOTES, 'UTF-8');
         $tuya_secret = htmlspecialchars($tuya_secret, ENT_QUOTES, 'UTF-8');
+        $tuya_account_uid = htmlspecialchars($tuya_account_uid, ENT_QUOTES, 'UTF-8');
         
         // Save to database
         if (!$settings->set('tuya_access_id', $tuya_access_id)){
@@ -108,11 +109,13 @@ function tuya_api(){
         }
         if (!$settings->set('tuya_account_uid', $tuya_account_uid)){
             $ret['error'] = true;
-            $ret['message'] = 'Unable to save your client secret';
+            $ret['message'] = 'Unable to save account UID';
         }
 
         try{
+            // init tuya to check working
             new Tuya($db, $settings);
+            
             $settings->set('tuya_configured', true);
         } catch (Exception $e){
             $settings->set('tuya_configured', false);

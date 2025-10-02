@@ -29,5 +29,11 @@ class DefaultConfig {
         'COOKIE_DOMAIN' => "", // Set to your domain
         'COOKIE_SECURE' => true, // HTTPS only
         'COOKIE_HTTPONLY' => true,
+
+        'TUYA_SUPPORTED_PRODUCTS' => [
+            'Smart Plug',
+            'Smart Switch'
+        ],
+        'TUYA_PAGE_SIZE' => '50'
     ];
 }
