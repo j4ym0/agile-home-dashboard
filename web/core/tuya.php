@@ -119,7 +119,7 @@ class Tuya{
         $data = json_decode($response, true);
         
         if (!$data['success']) {
-            throw new Exception($data['msg'] . ' (Code: ' . $data['code'] . ')');
+            throw new Exception('(Code: ' . $data['code'] . ') Check ID and Secret');
         }
         
         $this->apiToken = $data['result']['access_token'];
