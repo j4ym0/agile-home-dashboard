@@ -7,6 +7,8 @@ class Tuya{
     private $apiId = '';
     private $apiSecret = '';
     private $apiToken = '';
+    private $apiUid = '';
+    private $accountUid = '';
 
 
     public function __construct($database, $settings) {
@@ -16,6 +18,7 @@ class Tuya{
         // Load settings to use in 
         $this->apiId = $settings->get('tuya_access_id', '');
         $this->apiSecret = $settings->get('tuya_secret', '');
+        $this->accountUid = $settings->get('tuya_account_uid', '');
 
         $this->getToken();
 
@@ -29,7 +32,7 @@ class Tuya{
      * returns decoded json data
      * @throws RuntimeException
      */
-    private function fetchFromApi($apiEndpoint, $data = []){
+    private function fetchFromApi($apiEndpoint, $params = [], $data = []){
         if ($this->apiToken == ''){
             throw new RuntimeException('No token');
         }
@@ -40,6 +43,10 @@ class Tuya{
             throw new RuntimeException('Failed to initialize cURL');
         }
         try {
+            // add url params to api endpoint
+            if (!empty($params)) {
+                $apiEndpoint .= '?' . http_build_query($params);
+            }
             $timestamp = round(microtime(true) * 1000);
             $nonce     = $this->generateUUID();
             $sign = $this->generateSignature($timestamp, $nonce, $this->apiToken, $apiEndpoint);
@@ -117,12 +124,13 @@ class Tuya{
         }
 
         $data = json_decode($response, true);
-        
+
         if (!$data['success']) {
             throw new Exception('(Code: ' . $data['code'] . ') Check ID and Secret');
         }
         
         $this->apiToken = $data['result']['access_token'];
+        $this->apiUid = $data['result']['uid'];
     }
     private function generateUUID(){
         return sprintf(
@@ -152,8 +160,38 @@ class Tuya{
 
     public function getDeviceList() {
 
-        $deviceList = $this->fetchFromApi('/v1.0/devices', '')
-        echo $deviceList;
+        $deviceList = $this->fetchFromApi("/v1.0/users/$this->accountUid/devices", ['page_size' => Config::get('TUYA_PAGE_SIZE')],'');
+        if (!$deviceList['success']){
+            if ($deviceList['msg'] == 'permission deny'){
+                throw new Exception('Error: check your UID in settings'); 
+            }else{
+                throw new Exception('Error Getting List');
+            }
+        }
+
+        // init device list
+        $devices = [];
+        foreach($deviceList['result'] as $device){
+            // scan for devices we want
+            if (in_array($device['product_name'], Config::get('TUYA_SUPPORTED_PRODUCTS'))){
+                // get the relevant attributes 
+                $devices[] = [
+                    'id' => $device['id'],
+                    'name' => $device['name'],
+                    'local_key' => $device['local_key'],
+                    'model' => $device['model'],
+                    'product_name' => $device['product_name'],
+                    'icon' => 'https://images.tuyaeu.com/' . $device['icon'],
+                    'online' => $device['online'],
+                    'status' => $device['status'],
+                    'uid' => $device['uid'],
+                    'uuid' => $device['uuid'],
+                    'update_time' => $device['update_time']
+                ];
+            }
+        }
+
+        return $devices;
     }
 
 }
