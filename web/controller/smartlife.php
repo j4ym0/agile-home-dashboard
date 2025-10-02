@@ -1,4 +1,6 @@
 <?php
+$template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/smartlife.js']);
+$template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/main.js']);
 
 
 

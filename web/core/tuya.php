@@ -28,7 +28,7 @@ class Tuya{
     }
 
     /**
-     * Calls the Octopus Energy REST API
+     * Calls the Tuya REST API
      * returns decoded json data
      * @throws RuntimeException
      */
