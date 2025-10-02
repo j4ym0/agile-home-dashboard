@@ -18,7 +18,7 @@ $endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : 'home';
 $returnPath = $endpoint; 
 
 // Create database connection
-$db = new Database(Config::getInstance());
+$db = new Database();
 
 // Create database connection
 $settings = new Settings($db);
