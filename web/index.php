@@ -47,14 +47,36 @@ if (strpos($endpoint, 'js/') === 0) {
     }
     exit;
 }
-// Check if endpoint starts with 'save/'
-if (strpos($endpoint, 'save/') === 0) {
-    include __DIR__ . '/api/save.php';
-    exit;
-}
-// Check if endpoint starts with 'get/'
-if (strpos($endpoint, 'get/') === 0) {
-    include __DIR__ . '/api/get.php';
+// Check if endpoint starts with 'api/'
+if (strpos($endpoint, 'api/') === 0) {
+    // Remove the 'api/' prefix
+    $path = substr($endpoint, 4);
+
+    // Split the remaining path by '/'
+    $parts = explode('/', $path);
+    
+    // Check if we have at least 2 parts (filename and function)
+    if (count($parts) < 2) {
+        die('Invalid API format');
+    }
+    
+    $filename = $parts[0];
+    $endFunction = $parts[1];
+
+    // Validate filename (alphanumeric and underscores)
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $filename)) {
+        die('Invalid API endpoint');
+    }
+    if (!file_exists(__DIR__ . "/api/$filename.php")) {
+        die('Invalid API endpoint');
+    }
+    
+    // Validate function name (alphanumeric and underscores)
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $endFunction)) {
+        die('Invalid API endpoint');
+    }
+
+    include __DIR__ . "/api/$filename.php";
     exit;
 }
 

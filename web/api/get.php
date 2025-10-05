@@ -10,9 +10,6 @@ if ($debug){
     die();
 }
 
-// Strip the endpoint for the function needed
-$endFunction = str_replace("-", "_", substr($endpoint, 4)) ?? 'none';
-
 // Check user is logged in
 if (!$auth->is_logged_in()) {
     header("HTTP/1.0 401 Unauthorized");

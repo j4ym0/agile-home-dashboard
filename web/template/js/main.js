@@ -156,28 +156,30 @@ document.querySelectorAll('.toggle-checkbox').forEach(button => {
     button.addEventListener('change', async (e) => {
         if (!e.target.dataset.endpoint) return;
         e.preventDefault(); // Prevent default form submission
+        e.target.disabled = true; // Disable to prevent multiple clicks
         const endpoint = `${e.target.dataset.endpoint}`; // Get endpoint from data attribute
-    try {
-        // Create form data to submit
-        const formData = new FormData();
+        try {
+            // Create form data to submit
+            const formData = new FormData();
 
-        // Append fields
-        formData.append('name', e.target.dataset.setting);
-        formData.append('value', e.target.checked);
+            // Append fields
+            formData.append('name', e.target.dataset.setting);
+            formData.append('value', e.target.checked);
 
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            body: formData
-        });
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                body: formData
+            });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
-        const result = await response.json();
-        showNotification(result.message || 'Success!');
-    
-    } catch (error) {
-        showNotification(`Error: ${error.message}`);
-        console.error('Submission error:', error);
-    }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+            const result = await response.json();
+            showNotification(result.message || 'Success!');
+        
+        } catch (error) {
+            showNotification(`Error: ${error.message}`);
+            console.error('Submission error:', error);
+        }
+        e.target.disabled = false; // Re-enable the checkbox
     });
 });

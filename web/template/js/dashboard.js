@@ -207,7 +207,7 @@ async function update_current_consumption(){
     e = document.getElementById('electricity_current_consumption');
     if (e){
         e.innerHTML = '<div class="spin"></div>';
-        const response = await fetch('/get/current_consumption?date='+document.getElementById('current_date').value);
+        const response = await fetch('/api/get/current_consumption?date='+document.getElementById('current_date').value);
         if (!response.ok) {
             showNotification(`Unable to update current consumption!<br/>Status: ${response.status}`);
         }
@@ -220,7 +220,7 @@ async function update_current_consumption(){
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Fetch data from API
-    const response = await fetch('/get/dashboard_data?date='+document.getElementById('current_date').value);
+    const response = await fetch('/api/get/dashboard_data?date='+document.getElementById('current_date').value);
     if (!response.ok) {
         showNotification(`HTTP error! status: ${response.status}`);
     }

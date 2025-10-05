@@ -3,22 +3,22 @@
         <header>Data Settings</header>
         <main>
             <label class="toggle-container">
-                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
+                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
+                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save standard tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
+                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save consumption data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
+                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Enable Home Mini support</span>
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the current usage card on the dashboard and should only be enabled if you have a Home Mini</span></div></div>  
@@ -28,7 +28,7 @@
     <div class="setting-content">
         <header>Octopus API Key</header>
         <main>
-            <form id="api_info" data-endpoint="/save" data-update="/get/settings_octopus_account_info">
+            <form id="api_info" data-endpoint="/api/save" data-update="/api/get/settings_octopus_account_info">
                 <label for="account_number" class="input_label">Account Number found on you account page <a href="https://octopus.energy/dashboard/new/accounts" target="_blank">here</a></label>
                 <input type="text" name="account_number" id="account_number" value="<?= $account_number ?>" placeholder="A-">
                 <label for="api_key" class="input_label">Octopus API Key</label>
@@ -54,7 +54,7 @@
             <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
             <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
             <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
-            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/get">Update</button>
+            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
         </main>
     </div>
     <?php if ($SECURE_LOGIN): ?>
@@ -64,7 +64,7 @@
             <p>
                 Enter the username and password of the account you wish to add or delete.
             </p>
-            <form id="account" data-endpoint="/save">
+            <form id="account" data-endpoint="/api/save">
                 <label for="username" class="input_label">Username for the account</label>
                 <input type="text" name="username" id="username" value="" placeholder="username">
                 <label for="password" class="input_label">Account password min 3 characters (Must match account if deleting user)</label>
