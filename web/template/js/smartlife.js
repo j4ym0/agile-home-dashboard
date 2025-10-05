@@ -30,7 +30,7 @@ async function getDeviceList(){
                     '<div class="header">' + device.name.trim() + (device.online ? '' : ' - Offline') + '</div>' + 
                     '<div class="icon"><img src="' + device.icon + '"></div>'+ 
                     '<div class="status">' + getCurrentPower(device) + '</div>'+ 
-                    '<div class="switch"><input type="checkbox" name="' + device.id + '_switch" id="' + device.id + '_switch" class="toggle-checkbox" data-endpoint="/save/save_setting" data-setting="' + device.name + '" ' + (device.status[0].value ? 'checked' : '') + '><span class="toggle-track"></span></div>'+ 
+                    '<div class="switch"><label class="toggle-container"><input type="checkbox" name="' + device.id + '_switch" id="' + device.id + '_switch" class="toggle-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="' + device.id + '" ' + (device.status[0].value ? 'checked' : '') + '><span class="toggle-track"></span></label></div>'+ 
                     '</div>';
             });
             element.innerHTML = '<div class="device-cards">' + html + '</div>';    
@@ -42,7 +42,52 @@ async function getDeviceList(){
 
 
 
+async function handleToggleChange(checkbox) {
+    checkbox.disabled = true; // Disable the checkbox to prevent multiple clicks
+    const endpoint = checkbox.dataset.endpoint;
+    const deviceId = checkbox.dataset.id;
+    const isChecked = checkbox.checked;
+    
+    console.log(`Dynamic checkbox changed: ${deviceId} = ${isChecked}`);
+    
+    try {
+        // Create form data to submit
+        const formData = new FormData();
+
+        // Append fields
+        formData.append('device', deviceId);
+        formData.append('value', isChecked);
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        });
+
+        // Check if the response is OK (status 200-299)
+        if (!response.ok) {
+            showNotification(`Error! status: ${response.status} - ${response.statusText}`);
+        }
+
+        // Try to parse JSON
+        const data = await response.json();
+
+        showNotification(data.message || 'Success!');
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showNotification(`Unknown Error: ${error.message}`);
+    }
+    checkbox.disabled = false; // Re-enable the checkbox
+}
 document.addEventListener('DOMContentLoaded', async function() {
 
     getDeviceList();
+
+    // Listen on a parent element for changes to dynamically added checkboxes
+    document.addEventListener('change', function(event) {
+        // Check if the changed element is one of our dynamic checkboxes
+        if (event.target.matches('.toggle-checkbox')) {
+            handleToggleChange(event.target);
+        }
+    });
 });

@@ -153,7 +153,7 @@ document.querySelectorAll('.update-btn').forEach(button => {
         removeSpin(e.target);
     });
 });
-document.querySelectorAll('.toggle-checkbox').forEach(button => {
+document.querySelectorAll('.settings-toggle').forEach(button => {
     button.addEventListener('change', async (e) => {
         if (!e.target.dataset.endpoint) return;
         e.preventDefault(); // Prevent default form submission

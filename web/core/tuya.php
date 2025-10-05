@@ -47,10 +47,24 @@ class Tuya{
             if (!empty($params)) {
                 $apiEndpoint .= '?' . http_build_query($params);
             }
+
+            $options = [
+                CURLOPT_URL =>  $this->restAPI . $apiEndpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 30,
+            ];
+
             $timestamp = round(microtime(true) * 1000);
             $nonce     = $this->generateUUID();
             $sign = $this->generateSignature($timestamp, $nonce, $this->apiToken, $apiEndpoint);
         
+            // Add POST data if exists
+            if (!empty($data)) {
+                $options[CURLOPT_POST] = true;
+                $options[CURLOPT_POSTFIELDS] = is_array($data) ? json_encode($data) : $data;
+                $sign = $this->generatePostSignature($timestamp, $nonce, $this->apiToken, $apiEndpoint, $options[CURLOPT_POSTFIELDS]);
+            }
+
             $headers = [
                 'client_id: ' . $this->apiId,
                 'access_token: ' . $this->apiToken,
@@ -60,25 +74,13 @@ class Tuya{
                 "sign_method: HMAC-SHA256",
                 "Content-Type: application/json"
             ];
-        
-            $options = [
-                CURLOPT_URL =>  $this->restAPI . $apiEndpoint,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => $headers,
-                CURLOPT_TIMEOUT => 30,
-            ];
 
-            // Add POST data if exists
-            if (!empty($data)) {
-                $options[CURLOPT_POST] = true;
-                $options[CURLOPT_POSTFIELDS] = is_array($data) ? json_encode($data) : $data;
-            }
+            $options[CURLOPT_HTTPHEADER] = $headers;
 
             curl_setopt_array($ch, $options);
-        
+
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
             
             if ($httpCode !== 200) {
                 throw new Exception('HTTP: ' . $httpCode);
@@ -193,5 +195,23 @@ class Tuya{
 
         return $devices;
     }
+    public function setSwitchState(string $deviceId, bool $switchState) {
 
+        $commands = [
+            'commands' => [
+                [
+                    'code' => 'switch_1',  // The DP code for switch
+                    'value' => $switchState  // true = on, false = off
+                ]
+            ]
+        ];
+
+        $switched = $this->fetchFromApi("/v1.0/devices/{$deviceId}/commands", '',$commands);
+
+        if ($switched['success']) {
+            return true;
+        }
+        
+        throw new Exception($switched['msg']);
+    }
 }

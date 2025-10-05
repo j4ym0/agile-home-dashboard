@@ -3,22 +3,22 @@
         <header>Data Settings</header>
         <main>
             <label class="toggle-container">
-                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
+                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
+                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save standard tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
+#                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save consumption data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
+                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Enable Home Mini support</span>
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the current usage card on the dashboard and should only be enabled if you have a Home Mini</span></div></div>  
