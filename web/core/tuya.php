@@ -27,6 +27,10 @@ class Tuya{
         }
     }
 
+    private function addApiCall() {
+        $this->settings->set('tuya_api_calls_' . date('ym'), $this->settings->get('tuya_api_calls_' . date('ym'), 0) + 1);
+    }
+
     /**
      * Calls the Tuya REST API
      * returns decoded json data
@@ -80,6 +84,7 @@ class Tuya{
             curl_setopt_array($ch, $options);
 
             $response = curl_exec($ch);
+            $this->addApiCall();
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             
             if ($httpCode !== 200) {
@@ -118,6 +123,7 @@ class Tuya{
         ]);
         
         $response = curl_exec($ch);
+        $this->addApiCall();
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         

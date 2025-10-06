@@ -19,7 +19,7 @@ async function getDeviceList(){
     const element = document.getElementById('tuya_device_list');
     if (element) {
         try {
-            const response = await fetch('/get/tuya_device_list', {
+            const response = await fetch('/api/get/tuya_device_list', {
                 method: 'GET'
             });
             if (!response.ok) throw new Error(`Unable to fetch device list`);
