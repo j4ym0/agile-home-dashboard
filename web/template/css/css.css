@@ -600,6 +600,19 @@ date .date-display {
     margin: 0 auto;
 }
 
+.tuya-device-list .device-card.disabled::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* shorthand for top/right/bottom/left: 0 */
+  background-color: rgba(0, 0, 0, 0.5); /* gray overlay */
+  pointer-events: none; /* lets clicks go through */
+}
+
+.tuya-device-list .device-card.disabled .toggle-track, 
+    .tuya-device-list .device-card.disabled .header,
+    .tuya-device-list .device-card.disabled .status{
+    cursor: default;
+}
 .tuya-device-list .device-card {
     flex: 0 0 200px;
     height: 120px;
