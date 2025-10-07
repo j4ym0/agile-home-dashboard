@@ -26,11 +26,11 @@ async function getDeviceList(){
             const result = await response.json();
             html = '';
             result.devices.forEach((device, index) => {
-                html += '<div class="device-card ' + (device.online ? '' : ' disabled') + '" id="' + device.id + '">' + 
+                html += '<div class="device-card prevent-select' + (device.online ? '' : ' disabled') + '" id="' + device.id + '">' + 
                     '<div class="header">' + device.name.trim() + (device.online ? '' : ' - Offline') + '</div>' + 
                     '<div class="icon"><img src="' + device.icon + '"></div>'+ 
                     '<div class="status">' + getCurrentPower(device) + '</div>'+ 
-                    '<div class="switch"><label class="toggle-container"><input type="checkbox" name="' + device.id + '_switch" id="' + device.id + '_switch" class="toggle-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="' + device.id + '" ' + (device.status[0].value ? 'checked' : '') + '' + (device.online ? '' : ' disabled') + '><span class="toggle-track"></span></label></div>'+ 
+                    '<div class="switch"><label class="toggle-container"><input type="checkbox" name="' + device.id + '_switch" id="' + device.id + '_switch" class="toggle-checkbox switch-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="' + device.id + '" ' + (device.status[0].value ? 'checked' : '') + '' + (device.online ? '' : ' disabled') + '><span class="toggle-track"></span></label></div>'+ 
                     '</div>';
             });
             element.innerHTML = '<div class="device-cards">' + html + '</div>';    
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Listen on a parent element for changes to dynamically added checkboxes
     document.addEventListener('change', function(event) {
         // Check if the changed element is one of our dynamic checkboxes
-        if (event.target.matches('.toggle-checkbox')) {
+        if (event.target.matches('.switch-checkbox')) {
             handleToggleChange(event.target);
         }
     });

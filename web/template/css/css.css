@@ -11,7 +11,11 @@ body {
     background-color: #100030;
     color: #fff;
 }
-
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
 .sidebar {
     width: 250px;
     background-color: #180048;
@@ -654,13 +658,18 @@ date .date-display {
     text-align: center;
     width: 180px;
     bottom: 10px;
+    cursor: default;
 }
 .tuya-device-list .device-card .data span{
     text-align: center;
     font-size: 14px;
     font-weight: normal;
 }
-
+.tuya-device-list .auto-refresh{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
 
 
 .settings-container{
