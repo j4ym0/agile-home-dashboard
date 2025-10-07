@@ -34,6 +34,7 @@ class DefaultConfig {
             'Smart Plug',
             'Smart Switch'
         ],
-        'TUYA_PAGE_SIZE' => '50'
+        'TUYA_PAGE_SIZE' => '50', // 50 devices is max on free accounts
+        'TUYA_AUTO_REFRESH_INTERVAL' => 30, // in seconds, increase to reduce API calls 30,000 on free accounts
     ];
 }

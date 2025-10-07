@@ -1,4 +1,5 @@
 <?php
+
 $template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/smartlife.js']);
 $template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/main.js']);
 
@@ -16,4 +17,5 @@ try{
     $template->assign('tuya_config_error', true);
 }
 
-$template->assign('tuya_auto_refresh', $settings->get('home_mini_live_data', false) ? ' checked' : '');
+$template->assign('tuya_auto_refresh', $settings->get('tuya_auto_refresh', false) ? ' checked' : '');
+$template->assign('tuya_auto_refresh_interval', Config::get('TUYA_AUTO_REFRESH_INTERVAL', 30));
