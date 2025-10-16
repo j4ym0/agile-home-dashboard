@@ -11,6 +11,9 @@
             </label>
         </div>
     <?php if (isset($tuya_device_id)): ?>
+    <div class="main-content-back">
+        <a href="/smartlife"><i class="fa fa-arrow-left"></i> Back to Device List</a>
+    </div>
     <div class="tuya-device" data-device-id="<?= $tuya_device_id ?>"> 
         <div id="tuya_device">
             <div class="spin"></div>

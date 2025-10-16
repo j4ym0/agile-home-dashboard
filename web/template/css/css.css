@@ -675,6 +675,23 @@ date .date-display {
     right: 10px;
     top: 0px;
 }
+.main-content-back{
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #fff;
+    margin:  10px 0;
+}
+.main-content-back a{
+    color: #fff;
+    text-decoration: none;
+}
+.main-content-back a:hover{
+    color: #ccc;
+    text-decoration: underline;
+}
 
 
 .settings-container{
