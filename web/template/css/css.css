@@ -121,7 +121,7 @@ body {
 .main-content {
     flex: 1;
     margin-left: 250px;
-    padding: 20px;
+    padding: 30px 20px 20px 20px;
     overflow-y: auto;
     height: 100vh;
     position: relative;
@@ -584,7 +584,7 @@ date .date-display {
 
 
 
-.tuya-device-list {
+.tuya-device-list, .tuya-device {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -631,6 +631,9 @@ date .date-display {
     padding: 8px;
     position: relative;
 }
+.tuya-device-list .device-card .header a{
+    color: #fff;
+}
 .tuya-device-list .device-card .header{
     text-align: center;
     font-weight: normal;
@@ -665,10 +668,12 @@ date .date-display {
     font-size: 14px;
     font-weight: normal;
 }
-.tuya-device-list .auto-refresh{
+
+
+.auto-refresh{
     position: absolute;
     right: 10px;
-    top: 5px;
+    top: 0px;
 }
 
 

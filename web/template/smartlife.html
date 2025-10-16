@@ -3,7 +3,6 @@
         <p style="padding-top: 20px;">Smartlife is not configured correctly, go to <a href="/settings">Settings</a> tab and check the Smartlife API details.</p>
     </div>
 <?php else: ?>
-    <div class="tuya-device-list"> 
         <div class="auto-refresh">
             <label class="toggle-container">
                 <input type="checkbox" name="tuya_auto_refresh" id="tuya_auto_refresh" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="tuya_auto_refresh" data-interval='<?= $tuya_auto_refresh_interval ?>' <?= $tuya_auto_refresh ?>>
@@ -11,8 +10,17 @@
                 <span class="toggle-label">Auto Refresh</span>
             </label>
         </div>
+    <?php if (isset($tuya_device_id)): ?>
+    <div class="tuya-device" data-device-id="<?= $tuya_device_id ?>"> 
+        <div id="tuya_device">
+            <div class="spin"></div>
+        </div>
+    </div>
+    <?php else: ?>
+    <div class="tuya-device-list"> 
         <div id="tuya_device_list">
             <div class="spin"></div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endif; ?>
