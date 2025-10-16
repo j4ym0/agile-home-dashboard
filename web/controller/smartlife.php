@@ -19,3 +19,7 @@ try{
 
 $template->assign('tuya_auto_refresh', $settings->get('tuya_auto_refresh', false) ? ' checked' : '');
 $template->assign('tuya_auto_refresh_interval', Config::get('TUYA_AUTO_REFRESH_INTERVAL', 30));
+
+if (isset($_GET['device_id'])){
+    $template->assign('tuya_device_id', $_GET['device_id']);
+}
