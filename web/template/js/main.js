@@ -17,7 +17,7 @@ function showNotification(m) {
     const c = document.getElementById('notification-container'); 
     const n = document.createElement('div');
     n.className = 'notification';
-    n.textContent = m;
+    n.innerHTML = m;
     c.appendChild(n);
     setTimeout(() => {
         n.classList.add('hide');

@@ -50,16 +50,28 @@ function api_info(){
         $account_number = htmlspecialchars($account_number, ENT_QUOTES, 'UTF-8');
         $meter_MPAN = htmlspecialchars($meter_MPAN, ENT_QUOTES, 'UTF-8');
         $meter_serial = htmlspecialchars($meter_serial, ENT_QUOTES, 'UTF-8');
+
+        if (strpos($api_key, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>API Key remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('api_key', $api_key)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save API Key';
+            }
+        }
+        if (strpos($account_number, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Account number remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('account_number', $account_number)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save your account number';
+            }
+        }   
         
-        // Save to database
-        if (!$settings->set('api_key', $api_key)){
-            $ret['error'] = true;
-            $ret['message'] = 'Unable to save API Key';
-        }
-        if (!$settings->set('account_number', $account_number)){
-            $ret['error'] = true;
-            $ret['message'] = 'Unable to save your account number';
-        }
         if ($api_key === ''){
             $settings->set('electricity_meter_MPAN', '');
             $settings->set('electricity_meter_serial', '');
