@@ -606,7 +606,7 @@ date .date-display {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    padding: 16px 0;
+    padding: 0;
     width: 100%;
     margin: 0 auto;
 }
