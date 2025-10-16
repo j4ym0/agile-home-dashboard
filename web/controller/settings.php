@@ -18,7 +18,7 @@ try{
     $settings->set('is_setup', false);
 }
 
-$template->assign('api_key', $settings->get('api_key', ''));
+$template->assign('api_key', maskString($settings->get('api_key', '')));
 $template->assign('account_number', $settings->get('account_number', 'A-'));
 $template->assign('electricity_meter_MPAN', $settings->get('electricity_meter_MPAN', ''));
 $template->assign('electricity_meter_serial', $settings->get('electricity_meter_serial', ''));

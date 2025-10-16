@@ -69,6 +69,9 @@ Note that you can:
  - Use `-p 80:80/tcp` to access the HTTP webpage, changin the first 80 to the port you require
  - Access the web dashboard from [http://localhost](http://localhost)
 
+## Custom config
+You can easily customise settings like the database connection and enable login in the config.php file. For a detailed guide, please visit the [config.php Wiki](https://github.com/j4ym0/agile-home-dashboard/wiki/config.php).
+
 ## TODO
 
  - Add smartlife support

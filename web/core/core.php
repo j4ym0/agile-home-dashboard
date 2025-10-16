@@ -86,3 +86,15 @@ function includeScript(string $basePath, string $requestedPath): void {
     // Include the file
     include $fullPath;
 }
+
+function maskString($apiKey, $visibleChars = 8) {
+    if (empty($apiKey)) return '';
+    
+    $length = strlen($apiKey);
+    if ($length <= $visibleChars) return $apiKey;
+    
+    $visiblePart = substr($apiKey, 0, $visibleChars);
+    $maskedPart = str_repeat('*', $length - $visibleChars);
+    
+    return $visiblePart . $maskedPart;
+}
