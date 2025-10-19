@@ -110,18 +110,35 @@ function tuya_api(){
         $tuya_secret = htmlspecialchars($tuya_secret, ENT_QUOTES, 'UTF-8');
         $tuya_account_uid = htmlspecialchars($tuya_account_uid, ENT_QUOTES, 'UTF-8');
         
-        // Save to database
-        if (!$settings->set('tuya_access_id', $tuya_access_id)){
-            $ret['error'] = true;
-            $ret['message'] = 'Unable to save Access ID/Client ID';
+        if (strpos($tuya_access_id, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Access ID remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_access_id', $tuya_access_id)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save Access ID/Client ID';
+            }
         }
-        if (!$settings->set('tuya_secret', $tuya_secret)){
-            $ret['error'] = true;
-            $ret['message'] = 'Unable to save your client secret';
+        if (strpos($tuya_secret, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Secret remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_secret', $tuya_secret)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save your client secret';
+            }
         }
-        if (!$settings->set('tuya_account_uid', $tuya_account_uid)){
-            $ret['error'] = true;
-            $ret['message'] = 'Unable to save account UID';
+        if (strpos($tuya_account_uid, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Account UID remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_account_uid', $tuya_account_uid)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save account UID';
+            }
         }
 
         try{
@@ -133,9 +150,7 @@ function tuya_api(){
             $settings->set('tuya_configured', false);
             $ret['error'] = true;
             $ret['message'] = 'Tuya Error: ' . $e->getMessage();
-        }
-
-        
+        }   
     }else{
         $ret['error'] = true;
         $ret['message'] = 'Unknown error';
