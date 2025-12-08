@@ -12,7 +12,7 @@ function getCurrentPower(device){
         if (w > 1000){
             w = Math.round((w/1000), 3) + ' kWh';
         }else{
-            w += ' W'
+            w += ' W';
         }
     }
     return w;
@@ -88,6 +88,49 @@ async function refreshCards(){
     // Schedule new timeout
     refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
 }
+async function refreshDevice(){
+    // Skip if not enabled
+    if (!document.getElementById('tuya_auto_refresh').checked) return;
+
+    const element = document.getElementById('tuya-device-details');
+    if (element) {
+        try {
+            await waitForFocus();
+            const formData = new FormData();
+
+            // Append fields
+            formData.append('device', document.querySelector('.tuya-device').dataset.deviceId);
+            const response = await fetch('/api/tuya/device', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) throw new Error(`Unable to fetch device details`);
+            const result = await response.json();
+            html = '';
+            
+            if (result.device){
+                device = result.device;
+                const card = document.getElementById(device.id);
+                card.classList = 'device-card prevent-select' + (device.online ? '' : ' disabled');
+                card.querySelector('.header').innerText = device.name.trim() + (device.online ? '' : ' - Offline');
+                card.querySelector('.status').innerText = getCurrentPower(device);
+                const checkbox = card.querySelector('.switch-checkbox');
+                checkbox.disabled = !device.online; // Disable if offline
+                checkbox.checked = device.status[0].value; // Update checked status
+            };
+        } catch (error) {
+            showNotification(`Error: ${error.message}`);
+        }
+    }
+
+    // Clear existing timer if it’s already running
+    if (refreshTimer) {
+        clearTimeout(refreshTimer);
+    }
+
+    // Schedule new timeout
+    refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
+}
 
 
 
@@ -129,11 +172,16 @@ async function handleToggleChange(checkbox) {
     checkbox.disabled = false; // Re-enable the checkbox
 }
 document.addEventListener('DOMContentLoaded', async function() {
-
     getDeviceList();
 
-    refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
-    refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
+    if (document.getElementById('tuya-device-list')){
+        refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
+        refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
+    }
+    if (document.getElementById('tuya-device-details')){
+        refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
+        refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
+    }
 
     // Listen on a parent element for changes to dynamically added checkboxes
     document.addEventListener('change', function(event) {

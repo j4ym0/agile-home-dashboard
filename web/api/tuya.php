@@ -70,3 +70,28 @@ function set_switch_status(){
 
     return $ret;
 }
+function device(){
+    global $settings, $db, $tuya;
+    $ret = [
+        'success' => false,
+        'message' => 'Unable to get device details'
+    ];  
+
+    $device_id = $_POST['device'] ?? '';
+
+    try{
+        if (!$device_id == ''){
+            $ret = [
+                'success' => true,
+                'device' => $tuya->getDeviceDetails($device_id)
+            ];
+        }
+    }catch (Exception $e){
+        $ret = [
+            'success' => false,
+            'message' => 'Error getting device: ' . $e->getMessage()
+        ];  
+    }
+
+    return $ret;
+}

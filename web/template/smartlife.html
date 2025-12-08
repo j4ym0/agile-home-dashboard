@@ -1,4 +1,5 @@
 <?php if (isset($tuya_config_error)): ?>
+    <h1>Smartlife</h1>
     <div class="message">
         <p style="padding-top: 20px;">Smartlife is not configured correctly, go to <a href="/settings">Settings</a> tab and check the Smartlife API details.</p>
     </div>
@@ -15,13 +16,24 @@
         <a href="/smartlife"><i class="fa fa-arrow-left"></i> Back to Device List</a>
     </div>
     <div class="tuya-device" data-device-id="<?= $tuya_device_id ?>"> 
-        <div id="tuya_device">
-            <div class="spin-center"><div class="spin"></div></div>
+        <h1>Smartlife Device - <?= $tuya_device_name ?></h1>
+        <div id="tuya-device-details">
+            <div class="tuya-devices">
+                <div class="header"></div>
+                <div class="device-card prevent-select<?= $tuya_device_online ? '' : ' disabled' ?>" id="<?= $tuya_device_id ?>">
+                    <div class="header"><?= $tuya_device_name ?></div>
+                    <div class="icon"><img src="<?= $tuya_device_icon ?>"></div>
+                    <div class="status"><?= $tuya_device_current_power ?></div>
+                    <div class="switch"><label class="toggle-container"><input type="checkbox" name="<?= $tuya_device_id ?>_switch" id="<?= $tuya_device_id ?>_switch" class="toggle-checkbox switch-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="<?= $tuya_device_id ?>" <?= $tuya_device_status[0] ? 'checked' : '' ?>  <?= $tuya_device_online ? '' : ' disabled' ?>><span class="toggle-track"></span></label></div>
+                </div>
+            </div>
+            
         </div>
     </div>
     <?php else: ?>
     <div class="tuya-device-list"> 
-        <div id="tuya_device_list">
+        <h1>Smartlife Devices</h1>
+        <div id="tuya_device_list" class="tuya-devices">
             <div class="spin-center"><div class="spin"></div></div>
         </div>
     </div>

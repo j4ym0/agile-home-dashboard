@@ -86,7 +86,7 @@ class Tuya{
             $response = curl_exec($ch);
             $this->addApiCall();
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            
+
             if ($httpCode !== 200) {
                 throw new Exception('HTTP: ' . $httpCode);
             }
@@ -201,6 +201,35 @@ class Tuya{
 
         return $devices;
     }
+
+    public function getDeviceDetails(string $device_id) {
+
+        $deviceList = $this->fetchFromApi("/v1.0/devices/$device_id", [],'');
+        if (!$deviceList['success']){
+            throw new Exception('Error Getting Device Details');
+        }
+
+        // init device list
+        $devices = [];
+        if ($deviceList['result']){
+            $device = $deviceList['result'];
+            $devices = [
+                'id' => $device['id'],
+                'name' => $device['name'],
+                'local_key' => $device['local_key'],
+                'model' => $device['model'],
+                'product_name' => $device['product_name'],
+                'icon' => 'https://images.tuyaeu.com/' . $device['icon'],
+                'online' => $device['online'],
+                'status' => $device['status'],
+                'uid' => $device['uid'],
+                'uuid' => $device['uuid'],
+                'update_time' => $device['update_time']
+           ];
+        }
+
+        return $devices;
+    }
     public function setSwitchState(string $deviceId, bool $switchState) {
 
         $commands = [
@@ -220,4 +249,28 @@ class Tuya{
         
         throw new Exception($switched['msg']);
     }
+
+    public function getCurrentPower($device){
+        $w = '';
+        if (!$device['online']) {
+            return 'Offline';
+        }
+        if (!$device['online']) {
+            return 'Offline';
+        }
+        foreach($device['status'] as $status) {
+            if ($status['code'] === 'cur_power'){
+                $w = $device['status'][0]['value'] ? ($status['value'] / 10) : 0;
+            }
+        }
+        if (is_numeric($w)){
+            if ($w > 1000){
+                $w = round(($w/1000), 3) + ' kWh';
+            }else{
+                $w .= ' W';
+            }
+        }
+        return $w;
+    }
+
 }

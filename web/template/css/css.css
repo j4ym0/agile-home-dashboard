@@ -591,7 +591,7 @@ date .date-display {
 
 
 
-.tuya-device-list, .tuya-device {
+.tuya-device-list {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -602,7 +602,7 @@ date .date-display {
     display: none;
 }
 
-.tuya-device-list .device-cards {
+.tuya-device-list .device-cards, .tuya-devices {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
@@ -611,20 +611,20 @@ date .date-display {
     margin: 0 auto;
 }
 
-.tuya-device-list .device-card.disabled::after {
+.tuya-devices .device-card.disabled::after {
   content: "";
   position: absolute;
-  inset: 0; /* shorthand for top/right/bottom/left: 0 */
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5); /* gray overlay */
-  pointer-events: none; /* lets clicks go through */
+  pointer-events: none;
 }
 
-.tuya-device-list .device-card.disabled .toggle-track, 
+.tuya-devices .device-card.disabled .toggle-track, 
     .tuya-device-list .device-card.disabled .header,
     .tuya-device-list .device-card.disabled .status{
     cursor: default;
 }
-.tuya-device-list .device-card {
+.tuya-devices .device-card {
     flex: 0 0 200px;
     height: 120px;
     background-color: #100030;
@@ -638,10 +638,10 @@ date .date-display {
     padding: 8px;
     position: relative;
 }
-.tuya-device-list .device-card .header a{
+.tuya-devices .device-card .header a{
     color: #fff;
 }
-.tuya-device-list .device-card .header{
+.tuya-devices .device-card .header{
     text-align: center;
     font-weight: normal;
     font-size: 14px;
@@ -652,30 +652,43 @@ date .date-display {
     top: 10px;
     border-bottom: 1px solid #ddd;
 }
-.tuya-device-list .device-card img{
+.tuya-devices .device-card img{
     position: absolute;
     top: 40px;
     left: 10px;
     height: 40px;
 }
-.tuya-device-list .device-card .switch{
+.tuya-devices .device-card .switch{
     position: absolute;
     right: 10px;
     top: 50px;
 }
-.tuya-device-list .device-card .status{
+.tuya-devices .device-card .status{
     position: absolute;
     text-align: center;
     width: 180px;
     bottom: 10px;
     cursor: default;
 }
-.tuya-device-list .device-card .data span{
+.tuya-devices .device-card .data span{
     text-align: center;
     font-size: 14px;
     font-weight: normal;
 }
-
+.tuya-devices .tuya-device-details{
+    flex: 0 0 350px;
+    height: 250px;
+    background-color: #100030;
+    border: 1px solid #5840ff;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    position: relative;
+}
 
 .auto-refresh{
     position: absolute;
