@@ -611,7 +611,7 @@ date .date-display {
     margin: 0 auto;
 }
 
-.tuya-devices .device-card.disabled::after {
+.tuya-devices .device-card.disabled::after, .tuya-device .device-image-can.disabled::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -689,6 +689,107 @@ date .date-display {
     padding: 8px;
     position: relative;
 }
+
+.tuya-device{
+    padding: 0;
+}
+.tuya-device .tuya-device-info{
+    padding: 25px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 25px;
+    align-items: start;
+    border: 1px solid #5840ff;
+    border-radius: 8px;
+    background: #180048;
+    position: relative;
+}
+.tuya-device .tuya-device-info .header{
+    color: #60a5fa;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-image-can{
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+.tuya-device .tuya-device-info .switch{   
+    position: absolute;
+    height: 20px;
+    width: 60px;
+    top: 170px;
+    left: 60px;
+    padding: 0;
+}
+
+.tuya-device .tuya-device-info .device-image-can img{
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tuya-device .tuya-device-info .device-info{
+    flex: 1;
+ }
+ .tuya-device .tuya-device-info .device-info .header{
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item{
+    padding: 5px;
+    display: grid;
+    grid-template-columns: auto 1fr; /* Label takes space, value auto */
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item label{
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 25px;
+    gap: 8px;
+    white-space: nowrap; /* Prevent label wrapping */
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item value{
+    color: #fff;
+    font-size: 14px;
+    text-align: left; /* Align all values to the right */
+    white-space: nowrap; /* Prevent value wrapping */
+}
+.tuya-device .tuya-device-info .tuya-device-consumption{
+    margin-top: 0px;
+    padding: 2px;
+    border: 1px solid #5840ff;
+    border-radius: 8px;
+    background: #180048;
+    width: 100%;
+    min-width: 320px;
+    min-height: 190px;
+}
+
 
 .auto-refresh{
     position: absolute;

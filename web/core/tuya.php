@@ -250,7 +250,7 @@ class Tuya{
         throw new Exception($switched['msg']);
     }
 
-    public function getCurrentPower($device){
+    public function getCurrentPower($device, $noSuffix=false) {
         $w = '';
         if (!$device['online']) {
             return 'Offline';
@@ -263,6 +263,7 @@ class Tuya{
                 $w = $device['status'][0]['value'] ? ($status['value'] / 10) : 0;
             }
         }
+        if ($noSuffix) return $w;
         if (is_numeric($w)){
             if ($w > 1000){
                 $w = round(($w/1000), 3) + ' kWh';

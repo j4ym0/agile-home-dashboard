@@ -1,5 +1,7 @@
 <?php
 
+$template->append('relLinks', ['rel' => 'javascript', 'href' => '/template/js/plotly-3.0.1.min.js']);
+
 $template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/smartlife.js']);
 $template->append('postRelLinks', ['rel' => 'javascript', 'href' => '/js/main.js']);
 
@@ -25,8 +27,7 @@ try{
         $template->assign('tuya_device_update_time', $device['update_time'] ?? 'Unknown');
         $template->assign('tuya_device_status', $device['status'] ?? []);
         
-        $template->assign('tuya_device_current_power', $tuya->getCurrentPower($device) ?? '');
-        
+        $template->assign('tuya_device_current_power', $tuya->getCurrentPower($device, true) ?? '');
     }
 
 } catch (Exception $e){

@@ -1,6 +1,6 @@
 let refreshTimer = null;
 let refreshInterval = 30;
-function getCurrentPower(device){
+function getCurrentPower(device, noSuffix=false){
     w = '';
     if (!device.online) return 'Offline';
     device.status.forEach((status, index) => {
@@ -8,6 +8,7 @@ function getCurrentPower(device){
             w = device.status[0].value ? (status.value / 10) : 0;
         }
     });
+    if (noSuffix) return w;
     if (isNumber(w)){
         if (w > 1000){
             w = Math.round((w/1000), 3) + ' kWh';
@@ -99,7 +100,7 @@ async function refreshDevice(){
             const formData = new FormData();
 
             // Append fields
-            formData.append('device', document.querySelector('.tuya-device').dataset.deviceId);
+            formData.append('device', element.dataset.deviceId);
             const response = await fetch('/api/tuya/device', {
                 method: 'POST',
                 body: formData
@@ -110,13 +111,25 @@ async function refreshDevice(){
             
             if (result.device){
                 device = result.device;
-                const card = document.getElementById(device.id);
-                card.classList = 'device-card prevent-select' + (device.online ? '' : ' disabled');
-                card.querySelector('.header').innerText = device.name.trim() + (device.online ? '' : ' - Offline');
-                card.querySelector('.status').innerText = getCurrentPower(device);
+                const card = document.getElementById('tuya-device-details');
+                card.querySelector('.device-image-can').classList = 'device-image-can ' + (device.online ? '' : ' disabled');
+                card.querySelector('#name').innerText = device.name.trim();
+                card.querySelector('#status').innerText = (device.online ? 'Online' : 'Offline');
                 const checkbox = card.querySelector('.switch-checkbox');
                 checkbox.disabled = !device.online; // Disable if offline
                 checkbox.checked = device.status[0].value; // Update checked status
+
+                let now = new Date();
+                let hours = formatTime(now.getHours());
+                let minutes = formatTime(now.getMinutes());
+                let seconds = formatTime(now.getSeconds());
+                if (document.getElementById('tuya-device-energy-consumption') && device.online && isNumber(getCurrentPower(device, true))) {
+                    Plotly.extendTraces('tuya-device-energy-consumption', {
+                        x: [[`${hours}:${minutes}:${seconds}`]],
+                        y: [[getCurrentPower(device, true)]]
+                    }, [0]);
+
+                }
             };
         } catch (error) {
             showNotification(`Error: ${error.message}`);
@@ -171,6 +184,90 @@ async function handleToggleChange(checkbox) {
     }
     checkbox.disabled = false; // Re-enable the checkbox
 }
+function renderChart(chartId) {
+    const chartContainer = document.getElementById(chartId);
+    if (chartContainer) {
+const layout = {
+            xaxis: {
+                title: 'Time',
+                showgrid: true,
+                showticklabels: true,
+                color: '#fff',
+                linecolor: '#100030',
+                gridcolor: '#100030',
+                rangemode: 'tozero',
+                autorange: true,
+            },
+            yaxis: {
+                title: {
+                    text: 'Watts',
+                    standoff: 15,  
+                },
+                showgrid: true,
+                color: '#fff',
+                linecolor: '#100030',
+                gridcolor: '#100030',
+                rangemode: 'tozero',
+                autorange: true,
+            },
+            annotations: [{
+                text: 'No Data Available',
+                xref: 'paper',
+                yref: 'paper',
+                x: 0.5,
+                y: 0.5,
+                showarrow: false,
+                font: {
+                    size: 18,
+                    color: '#fff'
+                },
+                align: 'center'
+            }],
+            autosize: true,
+            margin: {
+                t: 10,
+                b: 40,
+                l: 50,
+                r: 10
+            },
+            paper_bgcolor: '#180048',
+            plot_bgcolor: '#180048'
+        };
+
+        // Empty data array
+        const data = [];
+        const config = {
+            displayModeBar: false,
+            staticPlot: true
+        };
+        Plotly.newPlot(chartId, data, layout, config);
+
+        // Function to add sample data later
+                    var time = [];
+                    var watts = [];
+                    if (document.getElementById(chartId).dataset.initialWatts){
+                        let now = new Date();
+                        let hours = formatTime(now.getHours());
+                        let minutes = formatTime(now.getMinutes());
+                        let seconds = formatTime(now.getSeconds());
+                        time = [`${hours}:${minutes}:${seconds}`];
+                        watts = [document.getElementById(chartId).dataset.initialWatts];
+                    }  
+                    
+                    const trace = {
+                        x: time,
+                        y: watts,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        name: 'Energy Usage',
+                        line: { color: '#5840ff', width: 3 }
+                    };
+                    
+                    Plotly.react(chartId, [trace], layout);
+                    Plotly.relayout(chartId, { annotations: [] });
+
+    }
+}
 document.addEventListener('DOMContentLoaded', async function() {
     getDeviceList();
 
@@ -181,6 +278,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('tuya-device-details')){
         refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
         refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
+    }
+    if (document.getElementById('tuya-device-energy-consumption')){
+        renderChart('tuya-device-energy-consumption');
     }
 
     // Listen on a parent element for changes to dynamically added checkboxes
