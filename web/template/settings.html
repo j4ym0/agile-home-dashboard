@@ -41,6 +41,23 @@
         </main>
     </div>
     <div class="setting-content">
+        <header>Octopus Account Info</header>
+        <main>
+            <p>
+                You may need to click update from time to time if something in your account changes
+            </p>
+            <label for="electricity_meter_MPAN" class="input_label">Your electricity meterpoint's MPAN</label>
+            <input type="text" name="electricity_meter_MPAN" id="electricity_meter_MPAN" value="<?= $electricity_meter_MPAN ?>" placeholder="-" disabled>
+            <label for="electricity_meter_serial" class="input_label">Your electricity meter's serial number</label>
+            <input type="text" name="electricity_meter_serial" id="electricity_meter_serial" value="<?= $electricity_meter_serial ?>" placeholder="-" disabled>
+            <label for="electricity_product_code" class="input_label">Electricity Product Code</label>
+            <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
+            <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
+            <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
+            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
+        </main>
+    </div>
+    <div class="setting-content">
         <header>Smartlife API</header>
         <main>
             <form id="tuya_api" data-endpoint="/api/save">
@@ -60,39 +77,4 @@
             </form>
         </main>
     </div>
-    <div class="setting-content">
-        <header>Octopus Account Info</header>
-        <main>
-            <p>
-                You may need to click update from time to time if something in your account changes
-            </p>
-            <label for="electricity_meter_MPAN" class="input_label">Your electricity meterpoint's MPAN</label>
-            <input type="text" name="electricity_meter_MPAN" id="electricity_meter_MPAN" value="<?= $electricity_meter_MPAN ?>" placeholder="-" disabled>
-            <label for="electricity_meter_serial" class="input_label">Your electricity meter's serial number</label>
-            <input type="text" name="electricity_meter_serial" id="electricity_meter_serial" value="<?= $electricity_meter_serial ?>" placeholder="-" disabled>
-            <label for="electricity_product_code" class="input_label">Electricity Product Code</label>
-            <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
-            <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
-            <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
-            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
-        </main>
-    </div>
-    <?php if ($SECURE_LOGIN): ?>
-    <div class="setting-content">
-        <header>Login Management</header>
-        <main>
-            <p>
-                Enter the username and password of the account you wish to add or delete.
-            </p>
-            <form id="account" data-endpoint="/api/save">
-                <label for="username" class="input_label">Username for the account</label>
-                <input type="text" name="username" id="username" value="" placeholder="username">
-                <label for="password" class="input_label">Account password min 3 characters (Must match account if deleting user)</label>
-                <input type="password" name="password" id="password" value="" placeholder="password" minlength="3">
-                <button class="login-add-button" id="login-add-button" name="submit_type" type="submit" value="create_account">Add User</button>
-                <button class="login-delete-button" id="login-delete-button" name="submit_type" type="submit" value="delete_account">Delete User</button>
-            </form>
-        </main>
-    </div>
-    <? endif ?>
 </div>
