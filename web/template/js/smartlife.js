@@ -187,7 +187,7 @@ async function handleToggleChange(checkbox) {
 function renderChart(chartId) {
     const chartContainer = document.getElementById(chartId);
     if (chartContainer) {
-const layout = {
+        const layout = {
             xaxis: {
                 title: 'Time',
                 showgrid: true,
@@ -241,31 +241,34 @@ const layout = {
             staticPlot: true
         };
         Plotly.newPlot(chartId, data, layout, config);
+    
+        // Start creating lines on graph
+        var time = [];
+        var watts = [];
+        if (document.getElementById(chartId).dataset.initialWatts){
+            let now = new Date();
+            let hours = formatTime(now.getHours());
+            let minutes = formatTime(now.getMinutes());
+            let seconds = formatTime(now.getSeconds());
+            time = [`${hours}:${minutes}:${seconds}`];
+            watts = [document.getElementById(chartId).dataset.initialWatts];
+ 
+            // remove the no data annotation
+            Plotly.relayout(chartId, { annotations: [] });
+       }  
+        
+        // Make the traces
+        const trace = {
+            x: time,
+            y: watts,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Energy Usage',
+            line: { color: '#5840ff', width: 3 }
+        };
 
-        // Function to add sample data later
-                    var time = [];
-                    var watts = [];
-                    if (document.getElementById(chartId).dataset.initialWatts){
-                        let now = new Date();
-                        let hours = formatTime(now.getHours());
-                        let minutes = formatTime(now.getMinutes());
-                        let seconds = formatTime(now.getSeconds());
-                        time = [`${hours}:${minutes}:${seconds}`];
-                        watts = [document.getElementById(chartId).dataset.initialWatts];
-                    }  
-                    
-                    const trace = {
-                        x: time,
-                        y: watts,
-                        type: 'scatter',
-                        mode: 'lines+markers',
-                        name: 'Energy Usage',
-                        line: { color: '#5840ff', width: 3 }
-                    };
-                    
-                    Plotly.react(chartId, [trace], layout);
-                    Plotly.relayout(chartId, { annotations: [] });
-
+        // Render the chart with initial data
+        Plotly.react(chartId, [trace], layout);
     }
 }
 document.addEventListener('DOMContentLoaded', async function() {
