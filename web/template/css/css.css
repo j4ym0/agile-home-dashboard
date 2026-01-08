@@ -703,6 +703,9 @@ date .date-display {
     border-radius: 8px;
     background: #180048;
     position: relative;
+    min-width: max-content;
+    width: fit-content;
+    max-width: none;
 }
 .tuya-device .tuya-device-info .header{
     color: #60a5fa;
