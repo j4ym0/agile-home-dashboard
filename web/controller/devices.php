@@ -15,9 +15,9 @@ try{
     // check tuya is working
     $tuya = new Tuya($db, $settings);
 
-    if (isset($_GET['device_id'])){
-        $template->assign('tuya_device_id', $_GET['device_id']);
-        $device = $tuya->getDeviceDetails($_GET['device_id']);
+    if (isset($_GET['tuya_device_id'])){
+        $template->assign('tuya_device_id', $_GET['tuya_device_id']);
+        $device = $tuya->getDeviceDetails($_GET['tuya_device_id']);
         $template->assign('tuya_device_name', $device['name'] ?? 'Unknown Device');
         $template->assign('tuya_device_local_key', $device['local_key'] ?? 'Unknown');
         $template->assign('tuya_device_model', $device['model'] ?? 'Unknown');
