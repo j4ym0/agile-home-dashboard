@@ -141,6 +141,13 @@ function tuya_api(){
             }
         }
 
+        if ($tuya_access_id === '' || $tuya_secret === '' || $tuya_account_uid === ''){
+            $settings->set('tuya_configured', false);
+            $ret['error'] = false;
+            $ret['message'] = 'Tuya credentials removed';
+            return $ret;
+        }
+
         try{
             // init tuya to check working
             new Tuya($db, $settings);
