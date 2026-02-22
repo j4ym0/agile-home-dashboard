@@ -23,6 +23,7 @@ You’ll need an Octopus Energy account to get started. Don’t have one yet? Sw
 - Tariff comparison with standard tariff
 - Easy visualise tariff pricing
 - Live current energy usage from Home Mini
+- smartlife/tuya integration to control devices
 
 ## Screenshots
 
