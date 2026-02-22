@@ -12,7 +12,7 @@
   </a>
 </div>
 
-You’ll need an Octopus Energy account to get started. Don’t have one yet? Switch using my [Referal Link](https://share.octopus.energy/brave-sage-915), and we’ll both get £50 credit (or £100 each for businesses)!
+You’ll need an Octopus Energy account to get started. Don’t have one yet? Switch using my [Referral Link](https://share.octopus.energy/brave-sage-915), and we’ll both get £50 credit (or £100 each for businesses)!
 
 ## Features
 
@@ -33,14 +33,14 @@ You’ll need an Octopus Energy account to get started. Don’t have one yet? Sw
 
 Simple instance:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+docker run -d --name=agile-home-dashboard --restart unless-stopped \
 -p 80:80 \
 j4ym0/agile-home-dashboard
 ```
 
 Custom configuration file:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+docker run -d --name=agile-home-dashboard --restart unless-stopped \
 -v /My/Database/Folder/config.php:/var/www/html/config.php \
 -p 80:80 \
 j4ym0/agile-home-dashboard
@@ -48,7 +48,7 @@ j4ym0/agile-home-dashboard
 
 Persistent database volume:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+docker run -d --name=agile-home-dashboard --restart unless-stopped \
 -v /My/Database/Folder/config.php:/var/www/html/config.php \
 -v /My/Database/Folder/:/database \
 -p 80:80 \
@@ -57,7 +57,7 @@ j4ym0/agile-home-dashboard
 
 Override custom config:
 ```bash
-docker run -d --name=aglie-home-dashboard --restart unless-stopped \
+docker run -d --name=agile-home-dashboard --restart unless-stopped \
 -v /My/Database/Folder/config.php:/var/www/html/config.php \
 -v /My/Database/Folder/:/database \
 -e "SECURE_LOGIN=true"
@@ -66,7 +66,7 @@ j4ym0/agile-home-dashboard
 ```
 
 Note that you can:
- - Use `-p 80:80/tcp` to access the HTTP webpage, changin the first 80 to the port you require
+ - Use `-p 80:80/tcp` to access the HTTP webpage, change the first 80 to the port you require
  - Access the web dashboard from [http://localhost](http://localhost)
 
 ## Custom config
