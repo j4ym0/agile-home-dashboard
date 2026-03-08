@@ -92,6 +92,78 @@ function api_info(){
     }
     return $ret;
 }
+function tuya_api(){
+    global $db;
+    global $settings;
+    $ret = ['error' 	=> false,
+            'message' 	=> 'Saved'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+        // Get and trim all input
+        $tuya_access_id = trim($_POST['tuya_access_id'] ?? '');
+        $tuya_secret = trim($_POST['tuya_secret'] ?? '');
+        $tuya_account_uid = trim($_POST['tuya_account_uid'] ?? '');
+
+        // Prep for database insertion
+        $tuya_access_id = htmlspecialchars($tuya_access_id, ENT_QUOTES, 'UTF-8');
+        $tuya_secret = htmlspecialchars($tuya_secret, ENT_QUOTES, 'UTF-8');
+        $tuya_account_uid = htmlspecialchars($tuya_account_uid, ENT_QUOTES, 'UTF-8');
+        
+        if (strpos($tuya_access_id, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Access ID remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_access_id', $tuya_access_id)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save Access ID/Client ID';
+            }
+        }
+        if (strpos($tuya_secret, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Secret remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_secret', $tuya_secret)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save your client secret';
+            }
+        }
+        if (strpos($tuya_account_uid, '*') !== false){
+            $ret['error'] = false;
+            $ret['message'] .= '<br>Account UID remains unchanged';
+        }else{
+            // Save to database
+            if (!$settings->set('tuya_account_uid', $tuya_account_uid)){
+                $ret['error'] = true;
+                $ret['message'] = 'Unable to save account UID';
+            }
+        }
+
+        if ($tuya_access_id === '' || $tuya_secret === '' || $tuya_account_uid === ''){
+            $settings->set('tuya_configured', false);
+            $ret['error'] = false;
+            $ret['message'] = 'Tuya credentials removed';
+            return $ret;
+        }
+
+        try{
+            // init tuya to check working
+            new Tuya($db, $settings);
+            
+            $settings->set('tuya_configured', true);
+        } catch (Exception $e){
+            $settings->set('tuya_configured', false);
+            $ret['error'] = true;
+            $ret['message'] = 'Tuya Error: ' . $e->getMessage();
+        }   
+    }else{
+        $ret['error'] = true;
+        $ret['message'] = 'Unknown error';
+    }
+    return $ret;
+}
 
 function save_setting(){
     global $settings;

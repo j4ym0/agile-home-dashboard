@@ -25,8 +25,12 @@ $template->assign('electricity_meter_serial', $settings->get('electricity_meter_
 $template->assign('electricity_product_code', $settings->get('electricity_product_code', ''));
 $template->assign('electricity_tariff_code', $settings->get('electricity_tariff_code', ''));
 
+$template->assign('tuya_access_id', maskString($settings->get('tuya_access_id', '')));
+$template->assign('tuya_secret', maskString($settings->get('tuya_secret', '')));
+$template->assign('tuya_account_uid', maskString($settings->get('tuya_account_uid', '')));
+$template->assign('tuya_api_calls', $settings->get('tuya_api_calls_' . date('ym'), '0'));
+
 $template->assign('save_tariff_data', $settings->get('save_tariff_data', false) ? 'checked' : '');
 $template->assign('save_consumption_data', $settings->get('save_consumption_data', false) ? 'checked' : '');
 $template->assign('save_standard_tariff_data', $settings->get('save_standard_tariff_data', false) ? 'checked' : '');
 $template->assign('home_mini_live_data', $settings->get('home_mini_live_data', false) ? 'checked' : '');
-

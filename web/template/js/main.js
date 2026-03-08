@@ -4,6 +4,9 @@ function getMinOrZeroOfArray(numArray) {return numArray.reduce((min, value) => M
 function roundUpToNearestTen(number) {return Math.ceil(number / 10) * 10;}
 function roundDownToNearestTen(number) {return Math.floor(number / 10) * 10;}
 function isDictArray(arr) {if (!Array.isArray(arr)) {return false;}return arr.every(item => typeof item === 'object' && item !== null && !Array.isArray(item));}
+function isNumber(value) {return typeof value === 'number' && !isNaN(value);}
+function formatTime(number) {return number < 10 ? '0' + number : number;}
+async function waitForFocus() {if (document.hasFocus()) return; await new Promise(resolve => {const handler = () => {window.removeEventListener('focus', handler); resolve();}; window.addEventListener('focus', handler);});}
 function addSpin(e){
     e.dataset.text = e.innerText; // Store original text
     e.innerHTML = '<div class="spin"></div>';
@@ -152,7 +155,7 @@ document.querySelectorAll('.update-btn').forEach(button => {
         removeSpin(e.target);
     });
 });
-document.querySelectorAll('.toggle-checkbox').forEach(button => {
+document.querySelectorAll('.settings-toggle').forEach(button => {
     button.addEventListener('change', async (e) => {
         if (!e.target.dataset.endpoint) return;
         e.preventDefault(); // Prevent default form submission

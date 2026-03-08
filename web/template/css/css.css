@@ -11,7 +11,11 @@ body {
     background-color: #100030;
     color: #fff;
 }
-
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
 .sidebar {
     width: 250px;
     background-color: #180048;
@@ -117,13 +121,20 @@ body {
 .main-content {
     flex: 1;
     margin-left: 250px;
-    padding: 20px;
+    padding: 40px 20px 20px 20px;
     overflow-y: auto;
     height: 100vh;
     position: relative;
     padding-bottom: 15px; /* Space for footer */
     background-color: #100030;
     z-index: 100;
+}
+.main-content .spin-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
 @media screen and (max-width: 670px) {
     /* fix missing sidebar */
@@ -575,6 +586,269 @@ date .date-display {
 }
 .price_card.purple #price{
     background-color: #800080;
+}
+
+
+
+
+.tuya-device-list {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.tuya-device-list::-webkit-scrollbar {
+    display: none;
+}
+
+.tuya-device-list .device-cards, .tuya-devices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 0;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tuya-devices .device-card.disabled::after, .tuya-device .device-image-can.disabled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* gray overlay */
+  pointer-events: none;
+}
+
+.tuya-devices .device-card.disabled .toggle-track, 
+    .tuya-device-list .device-card.disabled .header,
+    .tuya-device-list .device-card.disabled .status{
+    cursor: default;
+}
+.tuya-devices .device-card {
+    flex: 0 0 200px;
+    height: 120px;
+    background-color: #100030;
+    border: 1px solid #5840ff;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    position: relative;
+}
+.tuya-devices .device-card .header a{
+    color: #fff;
+}
+.tuya-devices .device-card .header{
+    text-align: center;
+    font-weight: normal;
+    font-size: 14px;
+    width: 100%;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    position: absolute;
+    top: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.tuya-devices .device-card img{
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    height: 40px;
+}
+.tuya-devices .device-card .switch{
+    position: absolute;
+    right: 10px;
+    top: 50px;
+}
+.tuya-devices .device-card .status{
+    position: absolute;
+    text-align: center;
+    width: 180px;
+    bottom: 10px;
+    cursor: default;
+}
+.tuya-devices .device-card .data span{
+    text-align: center;
+    font-size: 14px;
+    font-weight: normal;
+}
+.tuya-devices .tuya-device-details{
+    flex: 0 0 350px;
+    height: 250px;
+    background-color: #100030;
+    border: 1px solid #5840ff;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    position: relative;
+}
+
+.tuya-device{
+    padding: 0;
+}
+.tuya-device .tuya-device-info {
+    padding: 25px;
+    display: grid;
+    /* Change to auto-fit for responsive behavior */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    align-items: start;
+    border: 1px solid #5840ff;
+    border-radius: 8px;
+    background: #180048;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+@media (min-width: 1024px) {
+    .tuya-device .tuya-device-info {
+        grid-template-columns: auto auto 1fr;
+    }
+    .tuya-device .tuya-device-info .tuya-device-consumption {
+        width: 100%;
+        min-width: 320px;
+        max-width: 100%;
+    }
+}
+@media (max-width: 1023px) and (min-width: 768px) {
+    .tuya-device .tuya-device-info {
+        grid-template-columns: auto 1fr;
+    }
+    .tuya-device .tuya-device-info .tuya-device-consumption {
+        grid-column: span 2;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+@media (max-width: 767px) {
+    .tuya-device .tuya-device-info {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+    }
+    .tuya-device .tuya-device-info .tuya-device-consumption {
+        width: 100%;
+        max-width: 100%;
+    }
+    .tuya-device .tuya-device-info .device-info{
+        margin-top: 30px;
+    }
+}
+.tuya-device .tuya-device-info .header{
+    color: #60a5fa;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-image-can{
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+.tuya-device .tuya-device-info .switch{   
+    position: absolute;
+    height: 20px;
+    width: 60px;
+    top: 170px;
+    left: 60px;
+    padding: 0;
+}
+
+.tuya-device .tuya-device-info .device-image-can img{
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tuya-device .tuya-device-info .device-info{
+    flex: 1;
+ }
+ .tuya-device .tuya-device-info .device-info .header{
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item{
+    padding: 5px;
+    display: grid;
+    grid-template-columns: auto 1fr; /* Label takes space, value auto */
+    align-items: center;
+    gap: 10px;
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item label{
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 25px;
+    gap: 8px;
+    white-space: nowrap; /* Prevent label wrapping */
+}
+.tuya-device .tuya-device-info .device-info .info-grid .info-item value{
+    color: #fff;
+    font-size: 14px;
+    text-align: left; /* Align all values to the right */
+    white-space: nowrap; /* Prevent value wrapping */
+}
+.tuya-device .tuya-device-info .tuya-device-consumption{
+    margin-top: 0px;
+    padding: 2px;
+    border: 1px solid #5840ff;
+    border-radius: 8px;
+    background: #180048;
+    width: 100%;
+    min-width: 260px;
+    min-height: 190px;
+}
+
+
+.auto-refresh{
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+.main-content-back{
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #fff;
+    margin:  10px 0;
+}
+.main-content-back a{
+    color: #fff;
+    text-decoration: none;
+}
+.main-content-back a:hover{
+    color: #ccc;
+    text-decoration: underline;
 }
 
 

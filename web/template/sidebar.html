@@ -11,6 +11,14 @@
                 <span class="sidebar-text">Dashboard</span>
             </a>
         </li>
+    <?php if ($tuya_configured): ?>
+        <li>
+            <a href="/devices" class="sidebar-item<?php if ($endpoint == 'devices'){ echo ' active';} ?>">
+                <i class="fa-solid fa-house-signal"></i>
+                <span class="sidebar-text">Devices</span>
+            </a>
+        </li>
+    <?php endif ?>
         <li>
             <a href="/settings" class="sidebar-item<?php if ($endpoint == 'settings'){ echo ' active';} ?>">
                 <i class="fas fa-sliders sidebar-icon"></i>

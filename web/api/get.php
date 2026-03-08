@@ -202,3 +202,17 @@ function dashboard_data(){
     }
     return $ret;
 }
+function tuya_device_list(){
+    global $settings, $db;
+    $ret = ['error' => false,
+            'message' => ''];
+
+    try{
+        $tuya = new Tuya($db, $settings);
+        $ret['devices'] = $tuya->getDeviceList();
+    }catch (Exception $e){
+        $ret['error'] = true;
+        $ret['message'] = $e->getMessage();
+    }
+    return $ret;
+}

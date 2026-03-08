@@ -29,5 +29,13 @@ class DefaultConfig {
         'COOKIE_DOMAIN' => "", // Set to your domain
         'COOKIE_SECURE' => true, // HTTPS only
         'COOKIE_HTTPONLY' => true,
+
+        // Tuya / Smartlife settings
+        'TUYA_SUPPORTED_PRODUCTS' => [
+            'Smart Plug',
+            'Smart Switch'
+        ], // List of supported product names
+        'TUYA_PAGE_SIZE' => '50', // 50 devices is max on free accounts
+        'TUYA_AUTO_REFRESH_INTERVAL' => 30, // in seconds, increase to reduce API calls 30,000 on free accounts
     ];
 }

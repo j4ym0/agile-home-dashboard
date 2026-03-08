@@ -3,22 +3,22 @@
         <header>Data Settings</header>
         <main>
             <label class="toggle-container">
-                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
+                <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
+                <input type="checkbox" name="save_standard_tariff_data" id="save_standard_tariff_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_standard_tariff_data" <?= $save_standard_tariff_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save standard tariff data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
+                <input type="checkbox" name="save_consumption_data" id="save_consumption_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_consumption_data" <?= $save_consumption_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Save consumption data to database</span>
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox" data-endpoint="/api/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
+                <input type="checkbox" name="home_mini_live_data" id="home_mini_live_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="home_mini_live_data" <?= $home_mini_live_data ?>>
                 <span class="toggle-track"></span>
                 <span class="toggle-label">Enable Home Mini support</span>
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the current usage card on the dashboard and should only be enabled if you have a Home Mini</span></div></div>  
@@ -34,7 +34,7 @@
                 <label for="api_key" class="input_label">Octopus API Key</label>
                 <input type="text" name="api_key" id="api_key" value="<?= $api_key ?>" placeholder="API Key">
                 <p>
-                    *You can find your API information <a href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" target="_blank">here</a>
+                    * You can find your API information <a href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" target="_blank">here</a>
                 </p>
                 <button class="api-key-button" type="submit">Save</button>
             </form>
@@ -57,22 +57,24 @@
             <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
         </main>
     </div>
-    <?php if ($SECURE_LOGIN): ?>
     <div class="setting-content">
-        <header>Login Management</header>
+        <header>Smartlife API</header>
         <main>
-            <p>
-                Enter the username and password of the account you wish to add or delete.
-            </p>
-            <form id="account" data-endpoint="/api/save">
-                <label for="username" class="input_label">Username for the account</label>
-                <input type="text" name="username" id="username" value="" placeholder="username">
-                <label for="password" class="input_label">Account password min 3 characters (Must match account if deleting user)</label>
-                <input type="password" name="password" id="password" value="" placeholder="password" minlength="3">
-                <button class="login-add-button" id="login-add-button" name="submit_type" type="submit" value="create_account">Add User</button>
-                <button class="login-delete-button" id="login-delete-button" name="submit_type" type="submit" value="delete_account">Delete User</button>
+            <form id="tuya_api" data-endpoint="/api/save">
+                <label for="tuya_access_id" class="input_label">Access ID/Client ID</label>
+                <input type="text" name="tuya_access_id" id="tuya_access_id" value="<?= $tuya_access_id ?>" placeholder="ID">
+                <label for="tuya_secret" class="input_label">Access Secret/Client Secret</label>
+                <input type="text" name="tuya_secret" id="tuya_secret" value="<?= $tuya_secret ?>" placeholder="Secret">
+                <label for="tuya_account_uid" class="input_label">Devices Account Link UID</label>
+                <input type="text" name="tuya_account_uid" id="tuya_account_uid" value="<?= $tuya_account_uid ?>" placeholder="UID">
+                <p>
+                    Total API calls this month: <?= $tuya_api_calls ?>
+                </p>
+                <p>
+                    * Instructions are on <a href="https://github.com/j4ym0/agile-home-dashboard/wiki/Smartlife-and-Tuya" target="_blank">Agile Home Dashboard Wiki</a>
+                </p>
+                <button class="api-key-button" type="submit">Save</button>
             </form>
         </main>
     </div>
-    <? endif ?>
 </div>
