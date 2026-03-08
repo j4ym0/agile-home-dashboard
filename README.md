@@ -73,6 +73,10 @@ Note that you can:
 ## Custom config
 You can easily customise settings like the database connection and enable login in the config.php file. For a detailed guide, please visit the [config.php Wiki](https://github.com/j4ym0/agile-home-dashboard/wiki/config.php).
 
+## Smartlife/Tuya
+Have a look at the [Smartlife and Tuya Wiki](https://github.com/j4ym0/agile-home-dashboard/wiki/Smartlife-and-Tuya) page on how to setup an account and add you API keys.
+You can control devices from the Devices tab once configured and also if the device supports it view the realtime energy usage.
+
 ## TODO
 
  - Add smartlife support
