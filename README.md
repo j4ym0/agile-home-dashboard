@@ -79,7 +79,7 @@ You can control devices from the Devices tab once configured and also if the dev
 
 ## TODO
 
- - Add smartlife support
+ - More smartlife support
  - Add telegram support
  - Price triggers for smartlife
  - import meter data 
