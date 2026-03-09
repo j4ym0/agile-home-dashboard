@@ -81,8 +81,8 @@ class Octopus{
             // Return the decoded json data
             return $Data;
 
-        } finally {
-            curl_close($ch); // Ensure cURL handle is always closed
+        } catch (Exception $e) {
+            throw new RuntimeException('API request failed: ' . $e->getMessage());
         }
     }
     private function queryGraphQL($query){
@@ -127,8 +127,8 @@ class Octopus{
                 // Return the decoded json data
                 return $Data;
             }
-        } finally {
-            curl_close($ch); // Ensure cURL handle is always closed
+        } catch (Exception $e) {
+            throw new RuntimeException('API request failed: ' . $e->getMessage());
         }
     }
     private function getGraphToken(){
@@ -146,7 +146,6 @@ class Octopus{
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
         $response = curl_exec($ch);
-        curl_close($ch);
         
         $data = json_decode($response, true);
         $this->graphToken = $data['data']['obtainKrakenToken']['token'];

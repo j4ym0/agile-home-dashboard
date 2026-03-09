@@ -93,8 +93,9 @@ class Tuya{
 
             return json_decode($response, true);
 
-        } finally {
-            curl_close($ch); // Ensure cURL handle is always closed
+        } catch (Exception $e) {
+
+            throw new RuntimeException('API request failed: ' . curl_error($ch));
         }
     }
     private function getToken(){
@@ -125,7 +126,6 @@ class Tuya{
         $response = curl_exec($ch);
         $this->addApiCall();
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
         
         if ($httpCode !== 200) {
             throw new Exception('HTTP: ' . $httpCode);
