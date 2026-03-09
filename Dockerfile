@@ -11,3 +11,5 @@ RUN mkdir /database && \
     chmod 775 /database
 
 COPY --chown=www-data:www-data ./web /var/www/html
+
+RUN mv /var/www/html/htaccess /var/www/html/.htaccess
