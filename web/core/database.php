@@ -295,8 +295,10 @@ class Database {
 
         $data = $this->fetchAll($sql, $params);
 
-        $ret['results'] = $data;
-      
+        if (count($data) > 0){
+            $ret['results'] = $data;
+        }
+
         return $ret;
     }
     // Save the tariff data from the API
