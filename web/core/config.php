@@ -50,7 +50,7 @@ class Config {
     private static function loadEnvVars() {
 
         foreach ($_ENV as $key => $value) {
-            $keys = explode('.', $key);
+            $keys = explode('__', $key);
             $current = &self::$config;
 
             foreach ($keys as $i => $k) {
