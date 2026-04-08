@@ -18,6 +18,12 @@ class Config {
     public static function init() {
         if (self::$loaded) return;
 
+        // Check if tz environment variable is set and valid, then set timezone
+        $tzEnv = getenv('TZ');
+        if ($tzEnv && in_array($tzEnv, timezone_identifiers_list())) {
+            date_default_timezone_set($tzEnv);
+        }
+
         // Load defaults
         self::$config = DefaultConfig::$settings;
 

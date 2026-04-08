@@ -1,5 +1,7 @@
 FROM php:8-apache
 
+ENV TZ=Europe/London
+
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 RUN a2enmod rewrite
