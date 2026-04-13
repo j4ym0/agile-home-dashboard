@@ -168,7 +168,7 @@ function makeGraph(graphContainer, x, y, a, c, electric_cost, standard_tariff){
             title: "",
             barmode: 'stack',
             dragmode: false,
-            "xaxis": {"type": "category", "tickvals": x, "tickangle": -90},
+            "xaxis": {"type": "category", "tickvals": x, "tickangle": -90, "ticklabelshift": 12},
             "yaxis": {"type": "linear", "range": [roundDownToNearestTen(getMinOrZeroOfArray(traces[0].y)), roundUpToNearestTen(getMaxOfArray(traces[0].y))], "title": {"text": "Price (pence)", "standoff": 15,},},
             "yaxis2": {"side": "right", "type": "linear", "range": [0, Math.max(1, (Math.ceil(getMaxOfArray(traces[3].y))+1))], "title": {"text": "KWh", "standoff": 15,}, "rangemode": "tozero", "zeroline": false, "showgrid": false, "overlaying": "y"},
             "legend": {"yanchor": "top", "y": 1.3, "xanchor": "left", "x": 0, "orientation": "h"},
