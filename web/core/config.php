@@ -72,7 +72,6 @@ class Config {
         
         $keys = explode('.', $key);
         $value = self::$config;
-        print_r($keys);
         foreach ($keys as $k) {
             if (!isset($value[$k])) {
                 return $default;
