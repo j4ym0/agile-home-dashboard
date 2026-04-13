@@ -264,9 +264,9 @@ class Octopus{
         $tariffData = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $validFrom = new DateTime($validFrom, new DateTimeZone('Europe/London'));
+        $validFrom = new DateTime($validFrom, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
         $valid_from = $validFrom->setTimezone(new DateTimeZone('UTC'))->format('c');;
-        $validTo = new DateTime($validTo, new DateTimeZone('Europe/London'));
+        $validTo = new DateTime($validTo, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
         $valid_to = $validTo->setTimezone(new DateTimeZone('UTC'))->format('c');;
 
         // Check if we are using database and try to retrieve the results
@@ -307,9 +307,9 @@ class Octopus{
         $consumptionData = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $intervalStart = new DateTime($intervalStart, new DateTimeZone('Europe/London'));
+        $intervalStart = new DateTime($intervalStart, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
         $interval_start = $intervalStart->setTimezone(new DateTimeZone('UTC'))->format('c');;
-        $intervalEnd = new DateTime($intervalEnd, new DateTimeZone('Europe/London'));
+        $intervalEnd = new DateTime($intervalEnd, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
         $interval_end = $intervalEnd->setTimezone(new DateTimeZone('UTC'))->format('c');;
 
         // Check if we are using database and try to retrieve the results
@@ -352,7 +352,7 @@ class Octopus{
         $standard_tariffs = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $intervalStart = new DateTime($intervalStart, new DateTimeZone('Europe/London'));
+        $intervalStart = new DateTime($intervalStart, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
         $interval_start = $intervalStart->setTimezone(new DateTimeZone('UTC'))->format('c');
 
         // Get the DNO from the current tariff

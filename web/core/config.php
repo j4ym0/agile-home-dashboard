@@ -23,7 +23,8 @@ class Config {
         if ($tzEnv && in_array($tzEnv, timezone_identifiers_list())) {
             date_default_timezone_set($tzEnv);
         }
-
+        self::$config['app']['timezone'] = date_default_timezone_get();
+        
         // Load defaults
         self::$config = DefaultConfig::$settings;
 
