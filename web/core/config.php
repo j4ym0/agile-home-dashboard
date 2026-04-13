@@ -18,15 +18,15 @@ class Config {
     public static function init() {
         if (self::$loaded) return;
 
+        // Load defaults
+        self::$config = DefaultConfig::$settings;
+
         // Check if tz environment variable is set and valid, then set timezone
         $tzEnv = getenv('TZ');
         if ($tzEnv && in_array($tzEnv, timezone_identifiers_list())) {
             date_default_timezone_set($tzEnv);
         }
         self::$config['app']['timezone'] = date_default_timezone_get();
-        
-        // Load defaults
-        self::$config = DefaultConfig::$settings;
 
         // Load user config file (JSON or PHP)
         self::loadConfigFile('config.php');  // Then try PHP
@@ -72,7 +72,7 @@ class Config {
         
         $keys = explode('.', $key);
         $value = self::$config;
-        
+        print_r($keys);
         foreach ($keys as $k) {
             if (!isset($value[$k])) {
                 return $default;
