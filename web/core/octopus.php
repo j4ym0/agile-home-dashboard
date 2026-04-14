@@ -421,7 +421,7 @@ class Octopus{
         $now = new DateTime('now', new DateTimeZone('UTC'));
         $start = (clone $now)->sub(new DateInterval('PT1M'))->format('c');
         $end = $now->format('c');
-        
+
         $query = [
             "query" => '
                 query {
@@ -441,7 +441,6 @@ class Octopus{
         ];
         
         $data = $this->queryGraphQL($query);
-
         return $data['data']['smartMeterTelemetry'];
     }
 }

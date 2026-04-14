@@ -139,7 +139,9 @@ function current_consumption(){
 
         if (count($octopusTelematryData) > 0){
             $ret['electricity_current_consumption'] = ($octopusTelematryData[count($octopusTelematryData)-1]['demand']  / 1000);
-        }   
+        }else{
+            $ret['electricity_current_consumption'] = '--';
+        }
     }
     return $ret;
 }
