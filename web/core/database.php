@@ -288,8 +288,9 @@ class Database {
                 FROM standard_tariff_data 
                 WHERE product_code = ?
                 AND tariff_code = ?
-                AND valid_from <= ?
-                ORDER BY valid_from ASC';
+                AND ? BETWEEN valid_from AND valid_to
+                ORDER BY valid_from DESC
+                LIMIT 1';
 
         $params = [$productCode, $tariffCode, $UTC_valid_from];
 

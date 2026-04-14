@@ -370,7 +370,7 @@ class Octopus{
         }
 
         // if no data get the data from the API
-        if ($standard_tariffs === []){
+        if ($standard_tariffs === [] || $standard_tariffs['results'][0]['valid_to'] === null){
             // get the area code from tariff code
             $standard_tariffs = $this->fetchFromApi("/products/$productCode/electricity-tariffs/$tariffCode/standard-unit-rates/",['period_from' => $interval_start]);
             $standard_tariffs['results'] = array_reverse($standard_tariffs['results']); // Reverse the data so it goes from oldest to newest
@@ -382,7 +382,9 @@ class Octopus{
 
         // Revers the array so it goes from oldest to newest
         foreach ($standard_tariffs['results'] as $item) {
-            if ($item['payment_method'] === 'DIRECT_DEBIT'){
+            $tariffValidFrom = getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone('UTC'));
+            $tariffValidTo = getDateTimeWithTimezone($item['valid_to'] ?? new DateTime())->setTimezone(new DateTimeZone('UTC'));
+            if ($item['payment_method'] === 'DIRECT_DEBIT' && $tariffValidFrom <= $intervalStart && $tariffValidTo >= $intervalStart){
                 $results[] = [
                     'valid_from' => getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c'),
                     'value_inc_vat' => $item['value_inc_vat']

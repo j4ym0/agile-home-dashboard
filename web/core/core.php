@@ -104,7 +104,9 @@ function hasTimezone($datetime) {
 }
 
 function getDateTimeWithTimezone($datetime) {
-    if (hasTimezone($datetime)) {
+    if ($datetime instanceof DateTime) {
+        return $datetime;
+    } elseif (hasTimezone($datetime)) {
         return new DateTime($datetime);
     } else {
         return new DateTime($datetime, new DateTimeZone('UTC'));
