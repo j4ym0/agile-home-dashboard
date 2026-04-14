@@ -1,7 +1,7 @@
 <?php
 
 $APP_NAME = 'Agile Home Dashboard';
-$APP_VERSION = '0.1.1';
+$APP_VERSION = '0.2.1';
 
 
 ?>
