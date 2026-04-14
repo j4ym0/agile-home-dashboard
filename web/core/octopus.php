@@ -383,7 +383,7 @@ class Octopus{
         // Revers the array so it goes from oldest to newest
         foreach ($standard_tariffs['results'] as $item) {
             $tariffValidFrom = getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone('UTC'));
-            $tariffValidTo = getDateTimeWithTimezone($item['valid_to'] ?? new DateTime())->setTimezone(new DateTimeZone('UTC'));
+            $tariffValidTo = getDateTimeWithTimezone($item['valid_to'] ?? $intervalStart)->setTimezone(new DateTimeZone('UTC'));
             if ($item['payment_method'] === 'DIRECT_DEBIT' && $tariffValidFrom <= $intervalStart && $tariffValidTo >= $intervalStart){
                 $results[] = [
                     'valid_from' => getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c'),
