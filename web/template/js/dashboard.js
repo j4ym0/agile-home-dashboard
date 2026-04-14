@@ -200,7 +200,7 @@ function updateCardData(data){
     }
     e = document.getElementById('electricity_compare_standard_tariff');
     if (e && "electricity_compare_standard_tariff" in data && "electricity_standard_tariff" in data){
-        e.innerHTML = '£' + ((data.electricity_standard_tariff[0].value_inc_vat / 100.0) * data.electricity_total_consumption).toFixed(2);
+        e.innerHTML = '£' + ((data.electricity_standard_tariff[0].value_inc_vat / 100.0) * data.electricity_total_consumption).toFixed(2) + '<br><span>@ £' + (data.electricity_standard_tariff[0].value_inc_vat / 100.0).toFixed(2) + ' kWh</span>';
     }
 }
 async function update_current_consumption(){
