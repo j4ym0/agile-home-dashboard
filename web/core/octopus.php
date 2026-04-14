@@ -264,10 +264,10 @@ class Octopus{
         $tariffData = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $validFrom = new DateTime($validFrom, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
-        $valid_from = $validFrom->setTimezone(new DateTimeZone('UTC'))->format('c');;
-        $validTo = new DateTime($validTo, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
-        $valid_to = $validTo->setTimezone(new DateTimeZone('UTC'))->format('c');;
+        $validFrom = new DateTime($validFrom, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
+        $valid_from = $validFrom->setTimezone(new DateTimeZone('UTC'))->format('c');
+        $validTo = new DateTime($validTo, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
+        $valid_to = $validTo->setTimezone(new DateTimeZone('UTC'))->format('c');
 
         // Check if we are using database and try to retrieve the results
         if($this->save_tariff_data){
@@ -280,6 +280,7 @@ class Octopus{
         // if no data get the data from the API
         if ($tariffData === []){
             $tariffData = $this->fetchFromApi("/products/{$productCode}/electricity-tariffs/{$tariffCode}/standard-unit-rates",['period_from' => $valid_from,  'period_to' => $valid_to]);
+            $tariffData['results'] = array_reverse($tariffData['results']); // Reverse the data so it goes from oldest to newest
             if($this->save_tariff_data){
                 $this->db->saveTariffData($productCode, $tariffCode, $tariffData['results']);
             }
@@ -288,11 +289,11 @@ class Octopus{
         $average_price = 0;
 
         // Revers the array so it goes from oldest to newest
-        foreach (array_reverse($tariffData['results']) as $item) {
+        foreach ($tariffData['results'] as $item) {
             $results[] = [
                 'price_inc_vat' => $item['value_inc_vat'],
-                'valid_from' => new DateTime($item['valid_from'])->setTimezone(new DateTimeZone('UTC'))->format('c'),
-                'valid_to' => new DateTime($item['valid_to'] == '' ? new DateTime('tomorrow')->format('Y-m-d H:i:s') : $item['valid_to'])->setTimezone(new DateTimeZone('UTC'))->format('c')
+                'valid_from' => getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c'),
+                'valid_to' => getDateTimeWithTimezone($item['valid_to'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c')
             ];
             $average_price += $item['value_inc_vat'];
         } 
@@ -307,10 +308,10 @@ class Octopus{
         $consumptionData = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $intervalStart = new DateTime($intervalStart, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
-        $interval_start = $intervalStart->setTimezone(new DateTimeZone('UTC'))->format('c');;
-        $intervalEnd = new DateTime($intervalEnd, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
-        $interval_end = $intervalEnd->setTimezone(new DateTimeZone('UTC'))->format('c');;
+        $intervalStart = new DateTime($intervalStart, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
+        $interval_start = $intervalStart->setTimezone(new DateTimeZone('UTC'))->format('c');
+        $intervalEnd = new DateTime($intervalEnd, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
+        $interval_end = $intervalEnd->setTimezone(new DateTimeZone('UTC'))->format('c');
 
         // Check if we are using database and try to retrieve the results
         if($this->save_consumption_data){
@@ -323,6 +324,7 @@ class Octopus{
         // if no data get the data from the API
         if ($consumptionData === []){
             $consumptionData = $this->fetchFromApi("/electricity-meter-points/{$meterMPAN}/meters/{$meterSerial}/consumption/",['period_from' => $interval_start,  'period_to' => $interval_end]);
+            $consumptionData['results'] = array_reverse($consumptionData['results']); // Reverse the data so it goes from oldest to newest
             if($this->save_consumption_data){
                 $this->db->saveConsumptionData($meterMPAN, $meterSerial, $consumptionData['results']);
             }
@@ -332,14 +334,16 @@ class Octopus{
         $total_consumption = 0;
 
         // Revers the array so it goes from oldest to newest
-        foreach (array_reverse($consumptionData['results']) as $item) {
-            $results[] = [
-                'consumption' => $item['consumption'],
-                'interval_start' => new DateTime($item['interval_start'])->setTimezone(new DateTimeZone('UTC'))->format('c'),
-                'interval_end' => new DateTime($item['interval_end'])->setTimezone(new DateTimeZone('UTC'))->format('c')
-            ];
-            $average_consumption += $item['consumption'];
-            $total_consumption += $item['consumption'];
+        foreach ($consumptionData['results'] as $item) {
+            if (getDateTimeWithTimezone($item['interval_start'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC'))) < $intervalEnd->setTimezone(new DateTimeZone('UTC'))){
+                $results[] = [
+                    'consumption' => $item['consumption'],
+                    'interval_start' => getDateTimeWithTimezone($item['interval_start'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c'),
+                    'interval_end' => getDateTimeWithTimezone($item['interval_end'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c')
+                ];
+                $average_consumption += $item['consumption'];
+                $total_consumption += $item['consumption'];
+            }
         } 
 
         // Add the average cost to the results
@@ -352,7 +356,7 @@ class Octopus{
         $standard_tariffs = [];
 
         // Convert the datetime string to the ISO 8601 format
-        $intervalStart = new DateTime($intervalStart, new DateTimeZone($this->settings->get('app.timezone', 'UTC')));
+        $intervalStart = new DateTime($intervalStart, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
         $interval_start = $intervalStart->setTimezone(new DateTimeZone('UTC'))->format('c');
 
         // Get the DNO from the current tariff
@@ -369,6 +373,7 @@ class Octopus{
         if ($standard_tariffs === []){
             // get the area code from tariff code
             $standard_tariffs = $this->fetchFromApi("/products/$productCode/electricity-tariffs/$tariffCode/standard-unit-rates/",['period_from' => $interval_start]);
+            $standard_tariffs['results'] = array_reverse($standard_tariffs['results']); // Reverse the data so it goes from oldest to newest
             if($this->save_standard_tariffs){
                 $this->db->saveStandardTariffData($productCode, $tariffCode, $standard_tariffs['results']);
             }
@@ -376,10 +381,10 @@ class Octopus{
         $results = [];
 
         // Revers the array so it goes from oldest to newest
-        foreach (array_reverse($standard_tariffs['results']) as $item) {
+        foreach ($standard_tariffs['results'] as $item) {
             if ($item['payment_method'] === 'DIRECT_DEBIT'){
                 $results[] = [
-                    'valid_from' => new DateTime($item['valid_from'])->setTimezone(new DateTimeZone('UTC'))->format('c'),
+                    'valid_from' => getDateTimeWithTimezone($item['valid_from'])->setTimezone(new DateTimeZone(\Config::get('app.timezone', 'UTC')))->format('c'),
                     'value_inc_vat' => $item['value_inc_vat']
                 ];
             }

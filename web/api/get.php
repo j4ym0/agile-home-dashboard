@@ -98,7 +98,7 @@ function electric_usage(){
             $settings->get('electricity_meter_serial', ''),
             "$date 00:00:00",
             "$date 23:59:59");
-        
+
         $ret['electricity'] = $octopusTariff['electricity'];
         $ret['electricity_total_consumption'] = $octopusTariff['electricity_total_consumption'];
         $ret['electricity_average_consumption'] = $octopusTariff['electricity_average_consumption'];
@@ -166,25 +166,20 @@ function dashboard_data(){
         $electricity_below_average = 0;
 
         if (count($consumption['electricity']) >= count($tariff['tariff'])){
+            // Build date -> tariff mapping once
+            $tariff_map = [];
+            foreach ($tariff['tariff'] as $t) {
+                $tariff_map[getDateTimeWithTimezone($t['valid_from'])->format('Y-m-d H:i:s')] = $t;
+            }
+            
             for ($i = 0; $i < count($consumption['electricity']); $i++) {
-                // check it is the same time
-                // TODO if tariff date mismatch find it
-                $the_tariff = $tariff['tariff'][count($tariff['tariff'])-1];
-                if (count($tariff['tariff']) > $i){
-                    $the_tariff = $tariff['tariff'][$i];
-                }
-                if(new DateTime($the_tariff['valid_from']) != new DateTime($consumption['electricity'][$i]['interval_start'])){
-                    for ($t = 0; $t < count($tariff['tariff']); $t++) {
-                        if(new DateTime($tariff['tariff'][$t]['valid_from']) != new DateTime($consumption['electricity'][$i]['interval_start'])){
-                            $the_tariff = $tariff['tariff'][$t];
-                        }
-                    }
-                }
+                $consumption_date = getDateTimeWithTimezone($consumption['electricity'][$i]['interval_start'])->format('Y-m-d H:i:s');
+    
+                $the_tariff = $tariff_map[$consumption_date] ?? 
+                            $tariff['tariff'][array_key_last($tariff['tariff'])]; // Fallback to last tariff if no exact match
+
+
                 $electricity_total_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
-                if ($the_tariff['price_inc_vat'] <= 0){
-                    $electricity_total_plunge_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
-                    $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];
-                }
                 if ($the_tariff['price_inc_vat'] <= 0){
                     $electricity_total_plunge_cost += $the_tariff['price_inc_vat'] * $consumption['electricity'][$i]['consumption'];
                     $electricity_total_plunge_consumption += $consumption['electricity'][$i]['consumption'];

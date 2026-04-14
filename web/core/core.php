@@ -98,3 +98,15 @@ function maskString($apiKey, $visibleChars = 8) {
     
     return $visiblePart . $maskedPart;
 }
+
+function hasTimezone($datetime) {
+    return (bool) preg_match('/[+-]\d{2}:\d{2}$|Z$/', $datetime);
+}
+
+function getDateTimeWithTimezone($datetime) {
+    if (hasTimezone($datetime)) {
+        return new DateTime($datetime);
+    } else {
+        return new DateTime($datetime, new DateTimeZone('UTC'));
+    }
+}   

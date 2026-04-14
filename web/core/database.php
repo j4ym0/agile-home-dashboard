@@ -233,7 +233,7 @@ class Database {
                 AND tariff_code = ?
                 AND valid_from >= ?
                 AND valid_from <= ?
-                ORDER BY valid_from DESC';
+                ORDER BY valid_from ASC';
 
         $params = [$productCode, $tariffCode, $UTC_valid_from, $UTC_valid_to];
 
@@ -271,8 +271,8 @@ class Database {
         foreach ($tariffData as $item) {
             $placeholders[] = "(?, ?, ?, ?, ?, ?)";
             $values = array_merge($values, [$productCode, $tariffCode, 
-                (new DateTime($item['valid_from']))->format('Y-m-d H:i:s'), 
-                (new DateTime($item['valid_to']))->format('Y-m-d H:i:s'), 
+                (new DateTime($item['valid_from']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'), 
+                (new DateTime($item['valid_to']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'), 
                 $item['value_inc_vat'], $item['value_exc_vat']]);
         }
         
@@ -289,7 +289,7 @@ class Database {
                 WHERE product_code = ?
                 AND tariff_code = ?
                 AND valid_from <= ?
-                ORDER BY valid_from DESC';
+                ORDER BY valid_from ASC';
 
         $params = [$productCode, $tariffCode, $UTC_valid_from];
 
@@ -323,8 +323,8 @@ class Database {
             if ($item['payment_method'] === 'DIRECT_DEBIT'){
                 $placeholders[] = "(?, ?, ?, ?, ?, ?)";
                 $values = array_merge($values, [$productCode, $tariffCode, 
-                    (new DateTime($item['valid_from']))->format('Y-m-d H:i:s'), 
-                    $item['valid_to'] ? (new DateTime($item['valid_to']))->format('Y-m-d H:i:s') : null, 
+                    (new DateTime($item['valid_from']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'), 
+                    $item['valid_to'] ? (new DateTime($item['valid_to']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s') : null, 
                     $item['value_inc_vat'], $item['value_exc_vat']]);
             }
         }
@@ -383,8 +383,8 @@ class Database {
             $placeholders[] = "(?, ?, ?, ?, ?)";
             $values = array_merge($values, [$meter_mpan, $meter_serial, 
                 $item['consumption'], 
-                (new DateTime($item['interval_start']))->format('Y-m-d H:i:s'), 
-                (new DateTime($item['interval_end']))->format('Y-m-d H:i:s')]);
+                (new DateTime($item['interval_start']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'), 
+                (new DateTime($item['interval_end']))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s')]);
         }
         
         $sql .= implode(", ", $placeholders);
