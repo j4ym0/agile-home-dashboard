@@ -161,14 +161,16 @@ try {
     ) {
         include $fullPath;
     } else {
-        echo $fullPath;
-        throw new RuntimeException("Invalid file path");
+        // Handle not found gracefully
+        header("HTTP/1.1 404 Not Found");
+        include __DIR__ . '/errors/404.php';
+        $endpoint = 'errors/404';
     }
 } catch (RuntimeException $e) {
-    echo $e;
     // Handle errors gracefully
     header("HTTP/1.1 500 Internal Server Error");
-    include __DIR__ . '/errors/500.php'; // TODO: create
+    include __DIR__ . '/errors/500.php';
+    $endpoint = 'errors/500';
 }
 
 // Render individual components
