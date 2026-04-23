@@ -60,7 +60,7 @@ async function refreshCards(){
             result.devices.forEach((device, index) => {
                 const card = document.getElementById(device.id);
                 if (card){
-                    card.classListt = 'device-card prevent-select' + (device.online ? '' : ' disabled');
+                    card.classList = 'device-card prevent-select' + (device.online ? '' : ' disabled');
                     card.querySelector('.header').innerText = device.name.trim() + (device.online ? '' : ' - Offline');
                     card.querySelector('.status').innerText = getCurrentPower(device);
                     const checkbox = card.querySelector('.switch-checkbox');
@@ -79,21 +79,20 @@ async function refreshCards(){
         } catch (error) {
             showNotification(`Error: ${error.message}`);
         }
-    }
 
-    // Clear existing timer if it’s already running
-    if (refreshTimer) {
-        clearTimeout(refreshTimer);
-    }
+        // Clear existing timer if it’s already running
+        if (refreshTimer) {
+            clearTimeout(refreshTimer);
+        }
 
-    // Schedule new timeout
-    refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
+        // Schedule new timeout
+        refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
+    }
 }
 async function refreshDevice(){
     // Skip if not enabled
     if (!document.getElementById('tuya_auto_refresh').checked) return;
-
-    const element = document.getElementById('tuya-device-details');
+    const element = document.getElementById('tuya_device_details');
     if (element) {
         try {
             await waitForFocus();
@@ -111,7 +110,7 @@ async function refreshDevice(){
             
             if (result.device){
                 device = result.device;
-                const card = document.getElementById('tuya-device-details');
+                const card = document.getElementById('tuya_device_details');
                 card.querySelector('.device-image-can').classList = 'device-image-can ' + (device.online ? '' : ' disabled');
                 card.querySelector('#name').innerText = device.name.trim();
                 card.querySelector('#status').innerText = (device.online ? 'Online' : 'Offline');
@@ -123,8 +122,8 @@ async function refreshDevice(){
                 let hours = formatTime(now.getHours());
                 let minutes = formatTime(now.getMinutes());
                 let seconds = formatTime(now.getSeconds());
-                if (document.getElementById('tuya-device-energy-consumption') && device.online && isNumber(getCurrentPower(device, true))) {
-                    Plotly.extendTraces('tuya-device-energy-consumption', {
+                if (document.getElementById('tuya_device_energy_consumption') && device.online && isNumber(getCurrentPower(device, true))) {
+                    Plotly.extendTraces('tuya_device_energy_consumption', {
                         x: [[`${hours}:${minutes}:${seconds}`]],
                         y: [[getCurrentPower(device, true)]]
                     }, [0]);
@@ -134,15 +133,15 @@ async function refreshDevice(){
         } catch (error) {
             showNotification(`Error: ${error.message}`);
         }
-    }
 
-    // Clear existing timer if it’s already running
-    if (refreshTimer) {
-        clearTimeout(refreshTimer);
-    }
+        // Clear existing timer if it’s already running
+        if (refreshTimer) {
+            clearTimeout(refreshTimer);
+        }
 
-    // Schedule new timeout
-    refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
+        // Schedule new timeout
+        refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
+    }
 }
 
 
@@ -274,16 +273,13 @@ function renderChart(chartId) {
 document.addEventListener('DOMContentLoaded', async function() {
     getDeviceList();
 
-    if (document.getElementById('tuya-device-list')){
+    if (document.getElementById('tuya_auto_refresh')){
         refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
         refreshTimer = setTimeout(refreshCards, refreshInterval * 1000);
-    }
-    if (document.getElementById('tuya-device-details')){
-        refreshInterval = document.getElementById('tuya_auto_refresh').dataset.interval ?? 30;
         refreshTimer = setTimeout(refreshDevice, refreshInterval * 1000);
     }
-    if (document.getElementById('tuya-device-energy-consumption')){
-        renderChart('tuya-device-energy-consumption');
+    if (document.getElementById('tuya_device_energy_consumption')){
+        renderChart('tuya_device_energy_consumption');
     }
 
     // Listen on a parent element for changes to dynamically added checkboxes

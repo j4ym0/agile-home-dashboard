@@ -15,7 +15,7 @@
     <div class="main-content-back">
         <a href="/devices"><i class="fa fa-arrow-left"></i> Back to Device List</a>
     </div>
-    <div class="tuya-device" id="tuya-device-details" data-device-id="<?= $tuya_device_id ?>"> 
+    <div class="tuya-device" id="tuya_device_details" data-device-id="<?= $tuya_device_id ?>"> 
         <div class="tuya-device-info">
             <div class="switch"><label class="toggle-container"><input type="checkbox" name="<?= $tuya_device_id ?>_switch" id="<?= $tuya_device_id ?>_switch" class="toggle-checkbox switch-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="<?= $tuya_device_id ?>" <?= $tuya_device_status[0]['value'] ? 'checked' : '' ?>  <?= $tuya_device_online ? '' : ' disabled' ?>><span class="toggle-track"></span></label></div>
             <div class="device-image-can">
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="tuya-device-consumption">
-                <div id="tuya-device-energy-consumption" data-initial-watts="<?= $tuya_device_current_power ?>" data-device-id="<?= $tuya_device_id ?>" style="width: 100%; height: 100%;"></div>
+                <div id="tuya_device_energy_consumption" data-initial-watts="<?= $tuya_device_current_power ?>" data-device-id="<?= $tuya_device_id ?>" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
     </div>
