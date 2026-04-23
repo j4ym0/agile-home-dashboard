@@ -30,7 +30,7 @@ async function getDeviceList(){
             html = '';
             result.devices.forEach((device, index) => {
                 html += '<div class="device-card prevent-select' + (device.online ? '' : ' disabled') + '" id="' + device.id + '">' + 
-                    '<div class="header"><a href="?tuya_device_id=' + device.id + '">' + device.name.trim() + '</a></div>' + 
+                    '<div class="header"><a href="?tuya_device_id=' + device.id + '">' + device.name.trim() + (device.online ? '' : ' - Offline') + '</a></div>' + 
                     '<div class="icon"><img src="' + device.icon + '"></div>'+ 
                     '<div class="status">' + getCurrentPower(device) + '</div>'+ 
                     '<div class="switch"><label class="toggle-container"><input type="checkbox" name="' + device.id + '_switch" id="' + device.id + '_switch" class="toggle-checkbox switch-checkbox" data-endpoint="/api/tuya/set_switch_status" data-id="' + device.id + '" ' + (device.status[0].value ? 'checked' : '') + '' + (device.online ? '' : ' disabled') + '><span class="toggle-track"></span></label></div>'+ 
@@ -61,7 +61,7 @@ async function refreshCards(){
                 const card = document.getElementById(device.id);
                 if (card){
                     card.classList = 'device-card prevent-select' + (device.online ? '' : ' disabled');
-                    card.querySelector('.header').innerText = device.name.trim() + (device.online ? '' : ' - Offline');
+                    card.querySelector('.header a').innerText = device.name.trim() + (device.online ? '' : ' - Offline');
                     card.querySelector('.status').innerText = getCurrentPower(device);
                     const checkbox = card.querySelector('.switch-checkbox');
                     checkbox.disabled = !device.online; // Disable if offline
