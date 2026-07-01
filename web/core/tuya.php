@@ -273,5 +273,21 @@ class Tuya{
         }
         return $w;
     }
+    public function getDeviceVoltage($device, $noSuffix=false) {
+        $w = '';
+        if (!$device['online']) {
+            return 'Offline';
+        }
+        if (!$device['online']) {
+            return 'Offline';
+        }
+        foreach($device['status'] as $status) {
+            if ($status['code'] === 'cur_voltage'){
+                $w = $device['status'][0]['value'] ? ($status['value'] / 10) : 0;
+            }
+        }
+        if ($noSuffix) return $w;
+        return $w . ' V';
+    }
 
 }

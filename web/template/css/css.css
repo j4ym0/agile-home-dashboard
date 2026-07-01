@@ -793,7 +793,6 @@ date .date-display {
     gap: 15px;
 }
 .tuya-device .tuya-device-info .device-info .info-grid .info-item{
-    padding: 5px;
     display: grid;
     grid-template-columns: auto 1fr; /* Label takes space, value auto */
     align-items: center;

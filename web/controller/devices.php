@@ -28,6 +28,8 @@ try{
         $template->assign('tuya_device_status', $device['status'] ?? []);
         
         $template->assign('tuya_device_current_power', $tuya->getCurrentPower($device, true) ?? '');
+        $template->assign('tuya_device_current_consumption', $tuya->getCurrentPower($device) ?? '');
+        $template->assign('tuya_device_voltage', $tuya->getDeviceVoltage($device) ?? '');
     }
 
 } catch (Exception $e){

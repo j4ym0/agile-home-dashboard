@@ -18,6 +18,17 @@ function getCurrentPower(device, noSuffix=false){
     }
     return w;
 }
+function getDeviceVoltage(device, noSuffix=false){
+    w = '';
+    if (!device.online) return 'Offline';
+    device.status.forEach((status, index) => {
+        if (status.code === 'cur_voltage'){
+            w = device.status[0].value ? (status.value / 10) : 0;
+        }
+    });
+    if (noSuffix) return w;
+    return w + ' V';
+}
 async function getDeviceList(){
     const element = document.getElementById('tuya_device_list');
     if (element) {
@@ -114,6 +125,9 @@ async function refreshDevice(){
                 card.querySelector('.device-image-can').classList = 'device-image-can ' + (device.online ? '' : ' disabled');
                 card.querySelector('#name').innerText = device.name.trim();
                 card.querySelector('#status').innerText = (device.online ? 'Online' : 'Offline');
+                card.querySelector('#status').innerText = (device.online ? 'Online' : 'Offline');
+                card.querySelector('#voltage').innerText = getDeviceVoltage(device);
+                card.querySelector('#current_consumption').innerText = getCurrentPower(device);
                 const checkbox = card.querySelector('.switch-checkbox');
                 checkbox.disabled = !device.online; // Disable if offline
                 checkbox.checked = device.status[0].value; // Update checked status
