@@ -8,7 +8,7 @@ class DefaultConfig {
         'database' => [
             'type' => 'sqlite', // sqlite or mysql
             'mysql' => [
-                'host' => '192.168.0.90',
+                'host' => '172.17.0.1',
                 'dbname' => 'agile_dashboard',
                 'username' => 'agile_dashboard_user',
                 'password' => 'agile_dashboard_password',
