@@ -20,13 +20,14 @@ class Database {
     }
     
     private function connectMySQL(): void {
-        $host = Config::get('database.mysql.host', 'localhost');
-        $dbname = Config::get('database.mysql.dbname', 'agile_dashboard');
-        $username = Config::get('database.mysql.username', 'root');
-        $password = Config::get('database.mysql.password', '');
-        $charset = Config::get('database.mysql.charset', 'utf8mb4');
-        
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+        $host = Config::get('database.mysql.host',          'localhost');
+        $dbname = Config::get('database.mysql.dbname',      'agile_dashboard');
+        $username = Config::get('database.mysql.username',  'agile_dashboard_user');
+        $password = Config::get('database.mysql.password',  'agile_dashboard_password');
+        $port = Config::get('database.mysql.port',          3306);
+        $charset = Config::get('database.mysql.charset',    'utf8mb4');
+
+        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=$charset";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

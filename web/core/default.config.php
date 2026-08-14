@@ -12,6 +12,7 @@ class DefaultConfig {
                 'dbname' => 'agile_dashboard',
                 'username' => 'agile_dashboard_user',
                 'password' => 'agile_dashboard_password',
+                'port' => 3306,
                 'charset' => 'utf8mb4'
             ],
             
