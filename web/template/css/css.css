@@ -327,7 +327,7 @@ button[disabled] {
     width: 180px;
     top: 100%;
     left: 50%;
-    margin-left: -60px;
+    margin-left: -90px;
     margin-top: 15px;
 } 
 .tooltip .tooltiptext::after {
