@@ -1,6 +1,7 @@
 from db_handler import DBHandler
 from config import Config
 from typing import Any, Optional, Dict
+from datetime import datetime
 import json
 
 
@@ -34,7 +35,7 @@ class Settings(metaclass=SettingsMeta):
     _instance: Optional['Settings'] = None
     _settings: Dict[str, Any] = {}
     _loaded: bool = False
-    _db = None
+    _last_reload = -1
     
     def __new__(cls, *args, **kwargs):
         # Create singleton instance
@@ -61,7 +62,7 @@ class Settings(metaclass=SettingsMeta):
     
     def __setattr__(self, name: str, value: Any) -> None:
         # Set internal vars in the class
-        if name in ('_instance', '_settings', '_loaded', '_initialized', 'db') or name.startswith('_'):
+        if name in ('_instance', '_settings', '_loaded', '_initialized', '_last_reload') or name.startswith('_'):
             object.__setattr__(self, name, value)
             return
 
@@ -89,10 +90,8 @@ class Settings(metaclass=SettingsMeta):
         if cls._loaded:
             return
         
-        # Init db for setting
-        self._db = DBHandler()
-
-        # Init settings from db
+        instance = cls._instance or cls()
+        
         instance._load_settings()
         
         cls._loaded = True
@@ -101,15 +100,16 @@ class Settings(metaclass=SettingsMeta):
     def _load_settings(self) -> None:
         # Get settings from DB
         try:
-            cursor = self._db.select("settings", ["setting_key", "setting_value"])
-            self._settings = {}
-            for row in cursor:
-                # Try to parse JSON values
-                try:
-                    self._settings[row["setting_key"]] = json.loads(row["setting_value"])
-                except (json.JSONDecodeError, TypeError):
-                    self._settings[row["setting_key"]] = row["setting_value"]
-            print(f"Loaded {len(self._settings)} settings")
+            with DBHandler() as _db:
+                cursor = _db.select("settings", ["setting_key", "setting_value"])
+                self._settings = {}
+                for row in cursor:
+                    # Try to parse JSON values
+                    try:
+                        self._settings[row["setting_key"]] = json.loads(row["setting_value"])
+                    except (json.JSONDecodeError, TypeError):
+                        self._settings[row["setting_key"]] = row["setting_value"]
+                print(f"Loaded {len(self._settings)} settings")
         except Exception as e:
             print(f"ERROR: Failed to load settings: {e}")
             self._settings = {}
@@ -118,6 +118,13 @@ class Settings(metaclass=SettingsMeta):
     def get(cls, key: str, default: Optional[Any] = None) -> Any:
         cls.init()
         instance = cls._instance or cls()
+        
+        # Check if settings outdated and reload if neccessary
+        now = datetime.now()
+        if not instance._last_reload == now.minute:
+            instance._last_reload = now.minute
+            cls.reload()
+
         return instance._settings.get(key, default)
     
     @classmethod
