@@ -85,6 +85,7 @@ class MySQLHandler:
     
     def update_record(self, table_name: str, data: Dict[str, Any],
                      where_clause: str, where_params: tuple) -> int:
+        where_clause = where_clause.replace('?', '%s')
         set_clause = ', '.join([f"{key} = %s" for key in data.keys()])
         query = f"UPDATE {table_name} SET {set_clause} WHERE {where_clause}"
         params = tuple(data.values()) + where_params
@@ -98,6 +99,7 @@ class MySQLHandler:
     
     def delete_record(self, table_name: str, where_clause: str,
                      where_params: tuple) -> int:
+        where_clause = where_clause.replace('?', '%s')
         query = f"DELETE FROM {table_name} WHERE {where_clause}"
         return self.execute_non_query(query, where_params)
     
@@ -105,6 +107,8 @@ class MySQLHandler:
                       where_clause: str = None, where_params: tuple = None,
                       order_by: str = None, limit: int = None,
                       offset: int = None) -> List[Dict]:
+        if where_clause:
+            where_clause = where_clause.replace('?', '%s')
         cols = ', '.join(columns) if columns else '*'
         query = f"SELECT {cols} FROM {table_name}"
         
@@ -128,6 +132,8 @@ class MySQLHandler:
     
     def count_records(self, table_name: str, where_clause: str = None,
                      where_params: tuple = None) -> int:
+        if where_clause:
+            where_clause = where_clause.replace('?', '%s')
         query = f"SELECT COUNT(*) as count FROM {table_name}"
         if where_clause:
             query += f" WHERE {where_clause}"
@@ -137,6 +143,7 @@ class MySQLHandler:
     
     def exists(self, table_name: str, where_clause: str,
               where_params: tuple) -> bool:
+        where_clause = where_clause.replace('?', '%s')
         # Check if a record exists
         return self.count_records(table_name, where_clause, where_params) > 0
     
