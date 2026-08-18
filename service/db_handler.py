@@ -2,18 +2,24 @@ from typing import Dict, List, Any, Optional, Union
 from db_sqlite import SQLiteHandler
 from db_mysql import MySQLHandler
 from config import Config
+import tools
 
 class DBHandler:
     
     def __init__(self):
         self.handler = None
+        self.db_type = None
         self._initialize_handler()
     
     def _initialize_handler(self) -> None:
+
+        self.db_type = Config.database.type
+
         # Initialize the database with the correct handler based on config settings (e.g.,"""
-        if Config.database.type == 'mysql':
+        if self.db_type == 'mysql':
             self.handler = MySQLHandler()
         else:
+            self.db_type = 'sqlite'
             self.handler = SQLiteHandler()
         
         self.handler.connect()
@@ -136,3 +142,162 @@ class DBHandler:
             return self.handler.connection is not None
         else:
             return self.handler.connection is not None and self.handler.connection.is_connected()
+
+    def getTariffData(self, product_code: str, tariff_code: str, UTC_valid_from: str, UTC_valid_to: str, check_count: int = -1) -> List[Dict]:
+        ret = {}
+
+        params = (product_code, tariff_code, UTC_valid_from, UTC_valid_to);
+
+        data = self.select('tariff_data', 
+                            ['valid_from', 'valid_to', 'value_inc_vat', 'value_exc_vat'],
+                            'product_code = ? AND tariff_code = ? AND valid_from >= ? AND valid_from <= ?',
+                            params,
+                            'valid_from ASC')
+
+        # Check if the number or rows received is what is expected
+        if check_count >= 0:
+            if len(data) == check_count:
+                ret = {'results': data}
+        else:
+            ret = {'results': data}
+
+        return ret
+    
+    def saveTariffData(self, product_code: str, tariff_code: str, tariff_data: list[dict]):
+
+        # Check we have data to save
+        if len(tariff_data) < 1:
+            return;
+
+        sql = ''
+
+        if self.db_type == 'sqlite':
+            sql = 'INSERT OR '
+        
+        sql += "REPLACE INTO tariff_data (product_code, tariff_code, valid_from, valid_to, value_inc_vat, value_exc_vat) VALUES "
+
+        # Build the values
+        placeholders = [];
+        values = [];
+        for item in tariff_data:
+            if self.db_type == 'sqlite':
+                placeholders.append("(?, ?, ?, ?, ?, ?)")
+            else:
+                placeholders.append("(%s, %s, %s, %s, %s, %s)")
+            values.extend([
+                product_code,
+                tariff_code,
+                tools.convert_timezone(tools.parse_datetime(item['valid_from']), 'UTC', '%Y-%m-%d %H:%M:%S'),
+                tools.convert_timezone(tools.parse_datetime(item['valid_to']), 'UTC', '%Y-%m-%d %H:%M:%S'),
+                item['value_inc_vat'],
+                item['value_exc_vat']
+            ])
+        
+        sql += ", ".join(placeholders)
+
+        self.execute_raw_non_query(sql, values)
+
+    def getConsumptionData(self, meter_mpan: str, meter_serial:str, UTC_interval_start: str, UTC_interval_end: str, check_count: int = -1) -> dict:
+        ret = {}
+
+        params = [meter_mpan, meter_serial, UTC_interval_start, UTC_interval_end];
+
+        data = self.select('consumption_data', 
+                            ['consumption', 'interval_start', 'interval_end'],
+                            'meter_mpan = ? AND meter_serial = ? AND interval_start >= ? AND interval_start <= ?',
+                            params,
+                            'interval_start ASC')
+
+        # Check if the number or rows received is what is expected
+        if check_count >= 0:
+            if len(data) == check_count:
+                ret = {'results': data}
+        else:
+            ret = {'results': data}
+
+        return ret
+    
+    def saveConsumptionData(self, meter_mpan: str, meter_serial: str, consumption_data: list[dict]) -> None:
+
+        # Check we have data to save
+        if len(consumption_data) < 1:
+            return;
+
+        sql = ''
+
+        if self.db_type == 'sqlite':
+            sql = 'INSERT OR '
+        
+        sql += "REPLACE INTO consumption_data (meter_mpan, meter_serial, consumption, interval_start, interval_end) VALUES "
+
+        # Build the values
+        placeholders = [];
+        values = [];
+        for item in consumption_data:
+            if self.db_type == 'sqlite':
+                placeholders.append("(?, ?, ?, ?, ?)")
+            else:
+                placeholders.append("(%s, %s, %s, %s, %s)")
+            values.extend([
+                meter_mpan, 
+                meter_serial, 
+                item['consumption'], 
+                tools.convert_timezone(tools.parse_datetime(item['interval_start']), 'UTC', '%Y-%m-%d %H:%M:%S'),
+                tools.convert_timezone(tools.parse_datetime(item['interval_end']), 'UTC', '%Y-%m-%d %H:%M:%S'),
+            ])
+        
+        sql += ", ".join(placeholders)
+
+        self.execute_raw_non_query(sql, values)
+
+    def getStandardTariffData(self, product_code: str, tariff_code: str, UTC_valid_from: str) -> dict:
+        ret = {}
+
+        params = [product_code, tariff_code, UTC_valid_from];
+
+        data = self.select('standard_tariff_data', 
+                            ['valid_from', 'valid_to', 'value_inc_vat', 'value_exc_vat', '\'DIRECT_DEBIT\' AS payment_method'],
+                            'product_code = ? AND tariff_code = ? AND ? BETWEEN valid_from AND valid_to',
+                            params,
+                            'valid_from DESC',
+                            1)
+
+        if len(data) > 0:
+            ret = {'results': data}
+
+        return ret
+
+    def saveStandardTariffData(self, product_code: str, tariff_code: str, tariff_data: list[dict]):
+
+        # Check we have data to save
+        if len(tariff_data) < 1:
+            return
+
+        sql = ''
+
+        if self.db_type == 'sqlite':
+            sql = 'INSERT OR '
+        
+        sql += "REPLACE INTO standard_tariff_data (product_code, tariff_code, valid_from, valid_to, value_inc_vat, value_exc_vat) VALUES "
+
+        # Build the values
+        placeholders = [];
+        values = [];
+        for item in tariff_data:
+            if self.db_type == 'sqlite':
+                placeholders.append("(?, ?, ?, ?, ?, ?)")
+            else:
+                placeholders.append("(%s, %s, %s, %s, %s, %s)")
+            values.extend([
+                product_code, 
+                tariff_code, 
+                tools.convert_timezone(tools.parse_datetime(item['valid_from']), 'UTC', '%Y-%m-%d %H:%M:%S'),
+                tools.convert_timezone(tools.parse_datetime(item['valid_to']), 'UTC', '%Y-%m-%d %H:%M:%S') if item['valid_to'] else None,
+                item['value_inc_vat'],
+                item['value_exc_vat']
+            ])
+        
+        sql += ", ".join(placeholders)
+
+        self.execute_raw_non_query(sql, values)
+
