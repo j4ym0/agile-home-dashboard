@@ -23,6 +23,12 @@
                 <span class="toggle-label">Enable Home Mini support</span>
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the current usage card on the dashboard and should only be enabled if you have a Home Mini</span></div></div>  
             </label>
+            <label class="toggle-container">
+                <input type="checkbox" name="background_gathering" id="background_gathering" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="background_gathering" <?= $background_gathering ?>>
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Enable background data gathering</span>
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the collection of data from the Octopus API in the background</span></div></div>  
+            </label>
         </main>
     </div>
     <div class="setting-content">
