@@ -1,6 +1,7 @@
 import schedule
 import time
 import logging
+import os
 from datetime import datetime, time as dt_time
 import pytz
 from typing import Optional
@@ -9,9 +10,13 @@ from octopus import Octopus
 from settings import Settings
 from db_handler import DBHandler
 
+# Get log level from environment variable
+log_level = os.getenv('LOG_LEVEL', 'INFO')
+level = getattr(logging, log_level.upper(), logging.INFO)
+
 # Setup logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=level,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('scheduled_service.log'),
