@@ -19,8 +19,9 @@ class SettingsMeta(type):
         if name in instance._settings:
             return instance._settings[name]
         
-        raise AttributeError(f"Setting key '{name}' not found")
-    
+        #raise AttributeError(f"Setting key '{name}' not found")
+        return None
+        
     def __setattr__(cls, name: str, value: Any) -> None:
         # Used for setting class level attributes.
         if name in ('_instance', '_settings', '_loaded', '_initialized', '_db') or name.startswith('_'):
