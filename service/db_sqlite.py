@@ -1,0 +1,145 @@
+import sqlite3
+from typing import Dict, List, Any, Optional, Tuple
+import json
+from config import Config
+
+class SQLiteHandler:
+    
+    def __init__(self):
+        self.connection = None
+        self.cursor = None
+    
+    def connect(self) -> None:
+        try:
+            db_path = Config.get('database', '/database/database.db')
+            self.connection = sqlite3.connect(db_path)
+            self.connection.row_factory = sqlite3.Row
+            self.cursor = self.connection.cursor()
+        except sqlite3.Error as e:
+            raise Exception(f"SQLite connection error: {e}")
+    
+    def disconnect(self) -> None:
+        if self.connection:
+            self.connection.close()
+    
+    def execute_query(self, query: str, params: Optional[tuple] = None) -> List[Dict]:
+        try:
+            if params:
+                self.cursor.execute(query, params)
+            else:
+                self.cursor.execute(query)
+            return self.cursor.fetchall()
+        except sqlite3.Error as e:
+            raise Exception(f"SQLite query error: {e}")
+    
+    def execute_non_query(self, query: str, params: Optional[tuple] = None) -> int:
+        # Execute INSERT, UPDATE, DELETE query and return row count
+        try:
+            if params:
+                self.cursor.execute(query, params)
+            else:
+                self.cursor.execute(query)
+            self.connection.commit()
+            return self.cursor.rowcount
+        except sqlite3.Error as e:
+            self.connection.rollback()
+            raise exception(f"SQLite non-query error: {e}")
+    
+    def create_table(self, table_name: str, columns: Dict[str, str], 
+                    primary_key: str = 'id') -> None:
+        columns_sql = ', '.join([f"{col_name} {col_type}" for col_name, col_type in columns.items()])
+        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({primary_key} INTEGER PRIMARY KEY AUTOINCREMENT, {columns_sql})"
+        self.execute_non_query(query)
+    
+    def drop_table(self, table_name: str) -> None:
+        query = f"DROP TABLE IF EXISTS {table_name}"
+        self.execute_non_query(query)
+    
+    def insert_record(self, table_name: str, data: Dict[str, Any]) -> int:
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['?' for _ in data])
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        self.execute_non_query(query, tuple(data.values()))
+        return self.cursor.lastrowid
+    
+    def insert_many(self, table_name: str, data_list: List[Dict[str, Any]]) -> List[int]:
+        inserted_ids = []
+        for data in data_list:
+            inserted_id = self.insert_record(table_name, data)
+            inserted_ids.append(inserted_id)
+        return inserted_ids
+    
+    def update_record(self, table_name: str, data: Dict[str, Any],
+                     where_clause: str, where_params: tuple) -> int:
+        set_clause = ', '.join([f"{key} = ?" for key in data.keys()])
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {where_clause}"
+        params = tuple(data.values()) + where_params
+        return self.execute_non_query(query, params)
+    
+    def upsert_record(self, table_name: str, data: Dict[str, Any]) -> int:
+        columns = ', '.join(data.keys())
+        placeholders = ', '.join(['%s' for _ in data])
+        query = f"INSERT OR REPLACE INTO {table_name} ({columns}) VALUES ({placeholders})"
+        self.execute_non_query(query, tuple(data.values()))
+    
+    def delete_record(self, table_name: str, where_clause: str,
+                     where_params: tuple) -> int:
+        query = f"DELETE FROM {table_name} WHERE {where_clause}"
+        return self.execute_non_query(query, where_params)
+    
+    def select_records(self, table_name: str, columns: List[str] = None,
+                      where_clause: str = None, where_params: tuple = None,
+                      order_by: str = None, limit: int = None,
+                      offset: int = None) -> List[Dict]:
+        cols = ', '.join(columns) if columns else '*'
+        query = f"SELECT {cols} FROM {table_name}"
+        
+        if where_clause:
+            query += f" WHERE {where_clause}"
+        if order_by:
+            query += f" ORDER BY {order_by}"
+        if limit:
+            query += f" LIMIT {limit}"
+        if offset:
+            query += f" OFFSET {offset}"
+        
+        return self.execute_query(query, where_params)
+    
+    def get_by_id(self, table_name: str, record_id: int, 
+                 id_column: str = 'id') -> Optional[Dict]:
+        # Get a record by ID
+        results = self.select_records(table_name, where_clause=f"{id_column} = ?",
+                                    where_params=(record_id,), limit=1)
+        return results[0] if results else None
+    
+    def count_records(self, table_name: str, where_clause: str = None,
+                     where_params: tuple = None) -> int:
+        query = f"SELECT COUNT(*) as count FROM {table_name}"
+        if where_clause:
+            query += f" WHERE {where_clause}"
+        
+        result = self.execute_query(query, where_params)
+        return result[0]['count'] if result else 0
+    
+    def exists(self, table_name: str, where_clause: str,
+              where_params: tuple) -> bool:
+        return self.count_records(table_name, where_clause, where_params) > 0
+    
+    def create_index(self, table_name: str, index_name: str, 
+                    columns: List[str], unique: bool = False) -> None:
+        unique_clause = "UNIQUE " if unique else ""
+        columns_str = ', '.join(columns)
+        query = f"CREATE {unique_clause}INDEX IF NOT EXISTS {index_name} ON {table_name} ({columns_str})"
+        self.execute_non_query(query)
+    
+    def vacuum(self) -> None:
+        self.execute_non_query("VACUUM")
+    
+    def begin_transaction(self) -> None:
+        self.execute_non_query("BEGIN TRANSACTION")
+    
+    def commit_transaction(self) -> None:
+        self.execute_non_query("COMMIT")
+    
+    def rollback_transaction(self) -> None:
+        self.execute_non_query("ROLLBACK")

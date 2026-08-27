@@ -1,0 +1,6 @@
+schedule
+pytz
+typing
+pika 
+mysql-connector-python
+requests
