@@ -263,6 +263,10 @@ class Octopus{
         // Declare our data var
         $tariffData = [];
 
+        // Default if blank
+        $validFrom = $validFrom == '' ? (new DateTime())->format('Y-m-d') . ' 00:00:00' : $validFrom;
+        $validTo = $validTo == '' ? (new DateTime('+1 day'))->format('Y-m-d') . ' 23:59:59' : $validTo;
+
         // Convert the datetime string to the ISO 8601 format
         $validFrom = new DateTime($validFrom, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
         $valid_from = $validFrom->setTimezone(new DateTimeZone('UTC'))->format('c');
@@ -306,6 +310,10 @@ class Octopus{
 
         // Declare our data var
         $consumptionData = [];
+
+        // Default if blank
+        $intervalStart = $intervalStart == '' ? (new DateTime())->format('Y-m-d') . ' 00:00:00' : $intervalStart;
+        $intervalEnd = $intervalEnd == '' ? (new DateTime('+1 day'))->format('Y-m-d') . ' 23:59:59' : $intervalEnd;
 
         // Convert the datetime string to the ISO 8601 format
         $intervalStart = new DateTime($intervalStart, new DateTimeZone(\Config::get('app.timezone', 'UTC')));
@@ -354,6 +362,9 @@ class Octopus{
     public function getStandardTariff(string $currentTariffCode, string $intervalStart = ''): array{
         // Declare our data var
         $standard_tariffs = [];
+
+        // Default if blank
+        $intervalStart = $intervalStart == '' ? (new DateTime())->format('Y-m-d') . ' 00:00:00' : $intervalStart;
 
         // Convert the datetime string to the ISO 8601 format
         $intervalStart = new DateTime($intervalStart, new DateTimeZone(\Config::get('app.timezone', 'UTC')));

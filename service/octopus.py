@@ -176,11 +176,17 @@ class Octopus:
         # Declare our data var
         tariff_data = {}
 
+        # Default if blank
+        if validFrom == '':
+            validFrom = f"{datetime.now().strftime("%Y-%m-%d")} 00:00:00"
+        if validTo == '':
+            validTo = f"{(datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")} 23:59:59"
+
         # Convert the datetime string to the ISO 8601 format
         validFrom = tools.parse_datetime(validFrom, Config.get('app.timezone', 'UTC'))
         valid_from = validFrom.isoformat()
         validTo = tools.parse_datetime(validTo, Config.get('app.timezone', 'UTC'))
-        valid_to = tvalidTo.isoformat()
+        valid_to = validTo.isoformat()
 
         # Check if we are using database and try to retrieve the results
         if Settings.save_tariff_data:
@@ -216,6 +222,12 @@ class Octopus:
 
         # Declare our data var
         consumptionData = {};
+
+        # Default if blank
+        if intervalStart == '':
+            intervalStart = f"{datetime.now().strftime("%Y-%m-%d")} 00:00:00"
+        if intervalEnd == '':
+            intervalEnd = f"{(datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")} 23:59:59"
 
         # Convert the datetime string to the ISO 8601 format
         intervalStart = tools.parse_datetime(intervalStart, Config.get('app.timezone', 'UTC'))
@@ -263,7 +275,11 @@ class Octopus:
         # Declare our data var
         standard_tariffs = {};
 
-        # Convert the datetime string to the ISO 8601 format
+        # Default if blank
+        if intervalStart == '':
+            intervalStart = f"{datetime.now().strftime("%Y-%m-%d")} 00:00:00"
+
+       # Convert the datetime string to the ISO 8601 format
         intervalStart = tools.parse_datetime(intervalStart, Config.get('app.timezone', 'UTC'))
         interval_start = intervalStart.isoformat()
 
