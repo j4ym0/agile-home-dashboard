@@ -77,7 +77,7 @@ class ScheduledService:
         logger.info(f"[DAILY TASK] Executed at: {current_time}")
 
         try:
-            if not Settings.is_setup:
+            if not Settings.octopus_configured:
                 logger.debug(f"Cotopus not setup")
             else:
                 if not Settings.background_gathering:
