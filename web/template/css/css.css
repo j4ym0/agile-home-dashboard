@@ -24,6 +24,9 @@ body {
     height: 100vh;
     position: fixed;
 }
+.sidebar li.hidden{
+    display: none;
+}
 .sidebar-head {
     font-weight: bold;
     border-bottom: 1px solid #5840ff;

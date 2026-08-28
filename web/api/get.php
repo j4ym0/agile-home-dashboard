@@ -61,6 +61,7 @@ function settings_octopus_account_info(){
     $ret['electricity_meter_serial'] = $settings->get('electricity_meter_serial', '');
     $ret['octopus_api_status'] = $settings->get('octopus_configured', false) ? 'active' : '';
     $ret['tuya_api_status'] = $settings->get('tuya_configured', false) ? 'active' : '';
+    $ret['smartlife_menu'] = $settings->get('tuya_configured', false) ? '' : 'hidden';
     $ret['tuya_api_calls'] = $settings->get('tuya_api_calls_' . date('ym'), '0');
     $ret['data_butler_status'] = $settings->get('data_butler_enabled', false) ? 'active' : '';
 
@@ -75,6 +76,7 @@ function update_settings_status(){
 
     $ret['octopus_api_status'] = $settings->get('octopus_configured', false) ? 'active' : '';
     $ret['tuya_api_status'] = $settings->get('tuya_configured', false) ? 'active' : '';
+    $ret['smartlife_menu'] = $settings->get('tuya_configured', false) ? '' : 'hidden';
     $ret['tuya_api_calls'] = $settings->get('tuya_api_calls_' . date('ym'), '0');
     $ret['data_butler_status'] = $settings->get('data_butler_enabled', false) ? 'active' : '';
 
