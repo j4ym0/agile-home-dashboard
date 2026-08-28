@@ -12,10 +12,12 @@ try{
     // Get the last meter that is listed / installed
     $settings->set('electricity_meter_serial', $octopusTariff['supply'][0]['meters'][count($octopusTariff['supply'][0]['meters']) - 1]['serial_number']);
     $settings->set('is_setup', true);
+    $settings->set('octopus_configured', true);
     // TODO: multiple meters and catch errors
 }catch (Exception $e){
     // TODO: some error handling
     $settings->set('is_setup', false);
+    $settings->set('octopus_configured', false);
 }
 
 $template->assign('api_key', maskString($settings->get('api_key', '')));
