@@ -1,7 +1,62 @@
-<div class="settings-container content">
-    <div class="setting-content">
-        <header>Data Settings</header>
+<header class="content-header">
+    <div><h1>Settings</h1></div>
+</header>
+
+<section class="status-bar">
+    <div class="status-title"><strong>System Status</strong></div>
+    <div class="status-item">
+        <status class="<?= $octopus_configured ?>" id="octopus_api_status" data-update="class"></status>
+        <div><strong>Octopus API</strong></div>
+    </div>
+    <div class="status-item">
+        <status class="<?= $tuya_api_status ?>" id="tuya_api_status" data-update="class"></status>
+        <div><strong>Smart Life API</strong><small>API calls: <span id="tuya_api_calls"><?= $tuya_api_calls ?></span></small></div>
+    </div>
+    <div class="status-item">
+        <status class="<?= $data_butler_status ?>" id="data_butler_status" data-update="class"></status>
+        <div><strong>Data Butler</strong></div>
+    </div>
+</section>
+
+<div class="settings-grid">
+    <section class="card octopus-card">
+        <div class="card-header">
+            <h2>Octopus API Key</h2>
+        </div>
+        <p>You can find your octopus API information <a href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" target="_blank">here</a></p>
         <main>
+            <form id="api_info" data-endpoint="/api/save" data-update="/api/get/settings_octopus_account_info">
+                <label for="account_number" class="input_label">Account Number found on you account page <a href="https://octopus.energy/dashboard/new/accounts" target="_blank">here</a></label>
+                <input type="text" name="account_number" id="account_number" value="<?= $account_number ?>" placeholder="A-">
+                <label for="api_key" class="input_label">Octopus API Key</label>
+                <input type="text" name="api_key" id="api_key" value="<?= $api_key ?>" placeholder="API Key">
+                <button class="api-key-button" type="submit">Save</button>
+            </form>
+        </main>
+    </section>
+    <section class="card octopus-info-card">
+        <div class="card-header">
+            <h2>Octopus Account Info</h2>
+        </div>
+        <p>You may need to click update from time to time if something in your account changes</p>
+        <main class="octopus-list">
+            <label for="electricity_meter_MPAN" class="input_label">Your electricity meterpoint's MPAN</label>
+            <input type="text" name="electricity_meter_MPAN" id="electricity_meter_MPAN" value="<?= $electricity_meter_MPAN ?>" placeholder="-" disabled>
+            <label for="electricity_meter_serial" class="input_label">Your electricity meter's serial number</label>
+            <input type="text" name="electricity_meter_serial" id="electricity_meter_serial" value="<?= $electricity_meter_serial ?>" placeholder="-" disabled>
+            <label for="electricity_product_code" class="input_label">Electricity Product Code</label>
+            <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
+            <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
+            <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
+            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
+        </main>
+    </section>
+    <section class="card genral-card">
+        <div class="card-header">
+            <h2>Data Settings</h2>
+        </div>
+        <p>Control what data is stored locally.</p>
+        <main class="setting-list">
             <label class="toggle-container">
                 <input type="checkbox" name="save_tariff_data" id="save_tariff_data" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="save_tariff_data" <?= $save_tariff_data ?>>
                 <span class="toggle-track"></span>
@@ -24,63 +79,46 @@
                 <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the current usage card on the dashboard and should only be enabled if you have a Home Mini</span></div></div>  
             </label>
             <label class="toggle-container">
-                <input type="checkbox" name="background_gathering" id="background_gathering" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="background_gathering" <?= $background_gathering ?>>
+                <input type="checkbox" name="data_butler_enabled" id="data_butler_enabled" class="toggle-checkbox settings-toggle" data-endpoint="/api/save/save_setting" data-setting="data_butler_enabled" data-update="/api/get/update_settings_status" <?= $data_butler_enabled ?>>
                 <span class="toggle-track"></span>
-                <span class="toggle-label">Enable background data gathering</span>
-                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will enable the collection of data from the Octopus API in the background</span></div></div>  
+                <span class="toggle-label">Enable the Data Butler</span>
+                <div class="help"><div class="tooltip"><i class="fas fa-circle-info"></i><span class="tooltiptext">This will automaticly fetch data from the Octopus API in the background</span></div></div>  
             </label>
         </main>
-    </div>
-    <div class="setting-content">
-        <header>Octopus API Key</header>
+    </section>
+    <section class="card tuya-card">
+        <div class="card-header">
+            <h2>Smartlife \ Tuya API</h2>
+        </div>
+        <p>Instructions avalable on <a href="https://github.com/j4ym0/agile-home-dashboard/wiki/Smartlife-and-Tuya" target="_blank">Agile Home Dashboard Wiki</a></p>
         <main>
-            <form id="api_info" data-endpoint="/api/save" data-update="/api/get/settings_octopus_account_info">
-                <label for="account_number" class="input_label">Account Number found on you account page <a href="https://octopus.energy/dashboard/new/accounts" target="_blank">here</a></label>
-                <input type="text" name="account_number" id="account_number" value="<?= $account_number ?>" placeholder="A-">
-                <label for="api_key" class="input_label">Octopus API Key</label>
-                <input type="text" name="api_key" id="api_key" value="<?= $api_key ?>" placeholder="API Key">
-                <p>
-                    * You can find your API information <a href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" target="_blank">here</a>
-                </p>
-                <button class="api-key-button" type="submit">Save</button>
-            </form>
-        </main>
-    </div>
-    <div class="setting-content">
-        <header>Octopus Account Info</header>
-        <main>
-            <p>
-                You may need to click update from time to time if something in your account changes
-            </p>
-            <label for="electricity_meter_MPAN" class="input_label">Your electricity meterpoint's MPAN</label>
-            <input type="text" name="electricity_meter_MPAN" id="electricity_meter_MPAN" value="<?= $electricity_meter_MPAN ?>" placeholder="-" disabled>
-            <label for="electricity_meter_serial" class="input_label">Your electricity meter's serial number</label>
-            <input type="text" name="electricity_meter_serial" id="electricity_meter_serial" value="<?= $electricity_meter_serial ?>" placeholder="-" disabled>
-            <label for="electricity_product_code" class="input_label">Electricity Product Code</label>
-            <input type="text" name="electricity_product_code" id="electricity_product_code" value="<?= $electricity_product_code ?>" placeholder="-" disabled>
-            <label for="electricity_tariff_code" class="input_label">Electricity Tariff Code</label>
-            <input type="text" name="electricity_tariff_code" id="electricity_tariff_code" value="<?= $electricity_tariff_code ?>" placeholder="-" disabled>
-            <button class="update-btn" id="settings_octopus_account_info" type="submit" data-endpoint="/api/get">Update</button>
-        </main>
-    </div>
-    <div class="setting-content">
-        <header>Smartlife API</header>
-        <main>
-            <form id="tuya_api" data-endpoint="/api/save">
+            <form id="tuya_api" data-endpoint="/api/save" data-update="/api/get/update_settings_status">
                 <label for="tuya_access_id" class="input_label">Access ID/Client ID</label>
                 <input type="text" name="tuya_access_id" id="tuya_access_id" value="<?= $tuya_access_id ?>" placeholder="ID">
                 <label for="tuya_secret" class="input_label">Access Secret/Client Secret</label>
                 <input type="text" name="tuya_secret" id="tuya_secret" value="<?= $tuya_secret ?>" placeholder="Secret">
                 <label for="tuya_account_uid" class="input_label">Devices Account Link UID</label>
                 <input type="text" name="tuya_account_uid" id="tuya_account_uid" value="<?= $tuya_account_uid ?>" placeholder="UID">
-                <p>
-                    Total API calls this month: <?= $tuya_api_calls ?>
-                </p>
-                <p>
-                    * Instructions are on <a href="https://github.com/j4ym0/agile-home-dashboard/wiki/Smartlife-and-Tuya" target="_blank">Agile Home Dashboard Wiki</a>
-                </p>
                 <button class="api-key-button" type="submit">Save</button>
             </form>
         </main>
-    </div>
+    </section>
+    <?php if ($SECURE_LOGIN): ?>
+    <section class="card login-card">
+        <div class="card-header">
+            <h2>Login Management</h2>
+        </div>
+        <p>Enter the username and password of the account you wish to add or delete.</p>
+        <main>
+            <form id="account" data-endpoint="/api/save">
+                <label for="username" class="input_label">Username for the account</label>
+                <input type="text" name="username" id="username" value="" placeholder="username">
+                <label for="password" class="input_label">Account password min 3 characters (Must match account if deleting user)</label>
+                <input type="password" name="password" id="password" value="" placeholder="password" minlength="3">
+                <button class="login-add-button" id="login-add-button" name="submit_type" type="submit" value="create_account">Add User</button>
+                <button class="login-delete-button" id="login-delete-button" name="submit_type" type="submit" value="delete_account">Delete User</button>
+            </form>
+        </main>
+    </section>
+    <? endif ?>
 </div>

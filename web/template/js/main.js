@@ -94,8 +94,28 @@ async function updateElements(endpoint){
         const result = await response.json();
         Object.entries(result).forEach(([id, value]) => {
             const element = document.getElementById(id);
-            if (element) {
-                element.value = value;
+            if (!element) return;
+            switch (element.dataset.update) {
+                case "value":
+                    element.value = value;
+                    break;
+                case "html":
+                    element.innerHTML = value;
+                    break;
+                case "class":
+                    element.className  = value;
+                    break;
+                case "value":
+                    element.value = value;
+                    break;
+                default:
+                    switch (element.tagName) {
+                        case "INPUT":
+                            element.value = value;
+                            break;
+                        default:
+                            element.innerHTML = value;
+                    }
             }
         });        
     } catch (error) {
@@ -179,7 +199,12 @@ document.querySelectorAll('.settings-toggle').forEach(button => {
             const result = await response.json();
             showNotification(result.message || 'Success!');
         
+            if (button.hasAttribute('data-update')){
+                updateElements(button.dataset.update)
+            }
+    
         } catch (error) {
+            e.target.checked = !e.target.checked;
             showNotification(`Error: ${error.message}`);
             console.error('Submission error:', error);
         }

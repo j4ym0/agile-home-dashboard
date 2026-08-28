@@ -45,18 +45,38 @@ function settings_octopus_account_info(){
         // Get the last meter that is listed / installed
         $settings->set('electricity_meter_serial', $octopusTariff['supply'][0]['meters'][count($octopusTariff['supply'][0]['meters']) - 1]['serial_number']);
         $settings->set('is_setup', true);
+        $settings->set('octopus_configured', true);
         // TODO: multiple meters and catch errors
     }catch (Exception $e){
         $settings->set('electricity_meter_MPAN', '');
         $settings->set('electricity_meter_serial', '');
         $settings->set('electricity_product_code', '');
         $settings->set('electricity_tariff_code', '');
+        $settings->set('octopus_configured', false);
     }
 
     $ret['electricity_product_code'] =$settings->get('electricity_product_code', '');
     $ret['electricity_tariff_code'] = $settings->get('electricity_tariff_code', '');
     $ret['electricity_meter_MPAN'] = $settings->get('electricity_meter_MPAN', '');
     $ret['electricity_meter_serial'] = $settings->get('electricity_meter_serial', '');
+    $ret['octopus_api_status'] = $settings->get('octopus_configured', false) ? 'active' : '';
+    $ret['tuya_api_status'] = $settings->get('tuya_configured', false) ? 'active' : '';
+    $ret['tuya_api_calls'] = $settings->get('tuya_api_calls_' . date('ym'), '0');
+    $ret['data_butler_status'] = $settings->get('data_butler_enabled', false) ? 'active' : '';
+
+    return $ret;
+}
+
+function update_settings_status(){
+    global $settings, $db;
+
+    $ret = ['error' => false,
+            'message' => ''];
+
+    $ret['octopus_api_status'] = $settings->get('octopus_configured', false) ? 'active' : '';
+    $ret['tuya_api_status'] = $settings->get('tuya_configured', false) ? 'active' : '';
+    $ret['tuya_api_calls'] = $settings->get('tuya_api_calls_' . date('ym'), '0');
+    $ret['data_butler_status'] = $settings->get('data_butler_enabled', false) ? 'active' : '';
 
     return $ret;
 }
