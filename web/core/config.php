@@ -50,19 +50,33 @@ class Config {
 
     private static function loadEnvVars() {
         foreach ($_ENV as $key => $value) {
-            $keys = explode('__', strtolower($key));
+            $keys = explode('__', strtoupper($key));
             $current = &self::$config;
             
             foreach ($keys as $i => $k) {
                 if ($i === count($keys) - 1) {
-                    $current[$k] = $value;
-                } else {
-                    // matching key case-insensitively
+                    // Find existing key case-insensitively
                     $existingKeys = array_keys($current);
                     $matchedKey = null;
-                    for ($j = 0; $j < count($existingKeys); $j++) {
-                        if (strtolower($existingKeys[$j]) === $k) {
-                            $matchedKey = $existingKeys[$j];
+                    foreach ($existingKeys as $existingKey) {
+                        if (strtoupper($existingKey) === $k) {
+                            $matchedKey = $existingKey;
+                            break;
+                        }
+                    }
+                    
+                    if ($matchedKey !== null) {
+                        $current[$matchedKey] = $value;
+                    } else {
+                        $current[$k] = $value;
+                    }
+                } else {
+                    // Find existing key case-insensitively
+                    $existingKeys = array_keys($current);
+                    $matchedKey = null;
+                    foreach ($existingKeys as $existingKey) {
+                        if (strtoupper($existingKey) === $k) {
+                            $matchedKey = $existingKey;
                             break;
                         }
                     }
