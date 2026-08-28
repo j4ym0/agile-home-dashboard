@@ -1,6 +1,7 @@
 import sqlite3
 from typing import Dict, List, Any, Optional, Tuple
 import json
+import os
 from config import Config
 
 class SQLiteHandler:
@@ -11,7 +12,11 @@ class SQLiteHandler:
     
     def connect(self) -> None:
         try:
-            db_path = Config.get('database', '/database/database.db')
+            db_path = Config.get('sqlite.path', '/database/database.db')
+            conn = sqlite3.connect('database.db')
+            db_dir = os.path.dirname(db_path)
+            if not os.path.exists(db_dir):
+                os.makedirs(db_dir)
             self.connection = sqlite3.connect(db_path)
             self.connection.row_factory = sqlite3.Row
             self.cursor = self.connection.cursor()
