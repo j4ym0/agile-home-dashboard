@@ -99,7 +99,12 @@ class Tuya{
         }
     }
     private function getToken(){
-        $this->apiToken = '';
+        $this->apiToken = $_SESSION['apiToken'] ?? '';
+        $this->apiUid = $_SESSION['apiUid'] ?? '';
+
+        if ($this->apiToken != '' && $this->apiUid != '' && time() < ($_SESSION['token_expires_at'] ?? time())){
+            return;
+        }
 
         $timestamp = round(microtime(true) * 1000);
         $url ='/v1.0/token?grant_type=1';
@@ -138,7 +143,10 @@ class Tuya{
         }
         
         $this->apiToken = $data['result']['access_token'];
+        $_SESSION['apiToken'] = $this->apiToken;
         $this->apiUid = $data['result']['uid'];
+        $_SESSION['apiUid'] = $this->apiUid;
+        $_SESSION['token_expires_at'] = time() + 3600;
     }
     private function generateUUID(){
         return sprintf(
