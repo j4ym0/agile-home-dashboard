@@ -219,6 +219,11 @@ async function update_current_consumption(){
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // check if dashboard is avalable
+    if (!document.getElementById('dashboard_graph')){
+        return;
+    }
+
     // Fetch data from API
     const response = await fetch('/api/get/dashboard_data?date='+document.getElementById('current_date').value);
     if (!response.ok) {
