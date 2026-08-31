@@ -78,7 +78,7 @@ class ScheduledService:
 
         try:
             if not Settings.octopus_configured:
-                logger.debug(f"Cotopus not setup")
+                logger.debug(f"Octopus not setup")
             else:
                 if not Settings.background_gathering:
                     logger.debug(f"background gathering not enabled")

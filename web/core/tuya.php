@@ -238,6 +238,7 @@ class Tuya{
 
         return $devices;
     }
+
     public function setSwitchState(string $deviceId, bool $switchState) {
 
         $commands = [
@@ -281,6 +282,7 @@ class Tuya{
         }
         return $w;
     }
+    
     public function getDeviceVoltage($device, $noSuffix=false) {
         $w = '';
         if (!$device['online']) {
