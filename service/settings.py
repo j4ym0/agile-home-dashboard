@@ -136,10 +136,11 @@ class Settings(metaclass=SettingsMeta):
         try:
             instance._settings[key] = value
             # Store as JSON to handle different types
-            instance._db.upsert("settings", {
-                "setting_key": key,
-                "setting_value": json.dumps(value)
-            })
+            with DBHandler() as _db:
+                _db.upsert("settings", {
+                    "setting_key": key,
+                    "setting_value": json.dumps(value)
+                })
             return True
         except Exception as e:
             print(f"ERROR: Failed to set {key}: {e}")
@@ -167,10 +168,11 @@ class Settings(metaclass=SettingsMeta):
         try:
             if key in instance._settings:
                 del instance._settings[key]
-                instance._db.delete("settings", {
-                    "setting_key": key,
-                    "setting_value": json.dumps(value)
-                })
+                with DBHandler() as _db:
+                    _db.delete("settings", {
+                        "setting_key": key,
+                        "setting_value": json.dumps(value)
+                    })
                 return True
             return False
         except Exception as e:
