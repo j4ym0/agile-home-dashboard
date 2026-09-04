@@ -212,55 +212,96 @@ class Config(metaclass=ConfigMeta):
     
     @classmethod
     def _parse_php_config_file(cls, file_path: str) -> Dict:
+
         # Parse PHP file
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         content = re.sub(r'<\?php|\?>', '', content).strip()
-        
-        include_pattern = r'include\s*[\'"](.+?)[\'"]\s*;'
+        include_pattern = r'include\s*["\'](.+?)["\']\s*;'
+
         def replace_include(match):
             include_file = match.group(1)
             include_path = Path(file_path).parent / include_file
+
             if include_path.exists():
                 try:
                     with open(include_path, 'r') as f:
                         return f.read()
                 except:
                     return ''
+
             return ''
+
         content = re.sub(include_pattern, replace_include, content)
-        
-        pattern = r'\$CONFIG\s*=\s*array\s*\((.*?)\)\s*;'
-        match = re.search(pattern, content, re.DOTALL)
-        
+        patterns = [
+            r'\$CONFIG\s*=\s*array\s*\((.*?)\)\s*;',
+            r'public\s+static\s+\$settings\s*=\s*\[(.*?)\]\s*;',
+        ]
+
+        match = None
+        array_type = None
+
+        for pattern in patterns:
+            match = re.search(pattern, content, re.DOTALL | re.IGNORECASE)
+
+            if match:
+                array_type = 'array' if 'array' in pattern else 'bracket'
+                break
+
         if match:
+
             array_content = match.group(1)
-            array_content = cls._convert_php_array_to_python(array_content)
+            array_content = cls._convert_php_array_to_python(array_content, array_type)
+
             try:
                 return ast.literal_eval('{' + array_content + '}')
+
             except:
+
                 try:
                     return eval('{' + array_content + '}')
+
                 except:
                     return {}
-        
+
         return {}
-    
+
+
     @classmethod
-    def _convert_php_array_to_python(cls, php_array: str) -> str:
+    def _convert_php_array_to_python(cls, php_array: str, array_type: str = 'array') -> str:
         # Convert PHP array syntax to Python
         php_array = re.sub(r'//.*?$', '', php_array, flags=re.MULTILINE)
+
+        # Remove # comments
         php_array = re.sub(r'#.*?$', '', php_array, flags=re.MULTILINE)
+
+        # Remove /* ... */ comments
         php_array = re.sub(r'/\*.*?\*/', '', php_array, flags=re.DOTALL)
-        php_array = re.sub(r'array\s*\(', '{', php_array)
-        php_array = re.sub(r'\)', '}', php_array)
+
+        # PHP array()
+        if array_type == 'array':
+            php_array = re.sub(r'array\s*\(', '{', php_array, flags=re.IGNORECASE)
+            php_array = re.sub(r'\)', '}', php_array)
+
+        # PHP short arrays [...]
+        #
+        # Nested [ ... ] arrays need to become Python
+        # dictionaries when they contain =>.
+        if array_type == 'bracket':
+            php_array = re.sub(r'\[', '{', php_array)
+            php_array = re.sub(r'\]', '}', php_array)
+
+        # PHP associative array operator
         php_array = re.sub(r'=>', ':', php_array)
+
+        # PHP values
         php_array = re.sub(r'\bnull\b', 'None', php_array, flags=re.IGNORECASE)
         php_array = re.sub(r'\btrue\b', 'True', php_array, flags=re.IGNORECASE)
         php_array = re.sub(r'\bfalse\b', 'False', php_array, flags=re.IGNORECASE)
+
         return php_array
-    
+            
     @classmethod
     def _array_replace_recursive(cls, base: Dict, new: Dict) -> Dict:
         # Recursively merge dictionaries

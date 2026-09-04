@@ -30,8 +30,45 @@ class MySQLHandler:
             self.cursor.close()
             self.connection.close()
     
+    def reconnect(self) -> None:
+        # Check if we need to reconnect
+        needs_reconnect = False
+        
+        # Check if connection exists and is alive
+        if not self.connection:
+            needs_reconnect = True
+        else:
+            try:
+                if not self.connection.is_connected():
+                    needs_reconnect = True
+            except:
+                needs_reconnect = True
+        
+        # Only reconnect if needed
+        if needs_reconnect:
+            # Clean up broken connection
+            try:
+                if self.connection:
+                    self.connection.close()
+            except:
+                pass
+            
+            try:
+                if self.cursor:
+                    self.cursor.close()
+            except:
+                pass
+            
+            # Create new connection
+            self.connect()
+            self.cursor = self.connection.cursor(dictionary=True)
+            print("MySQL connection reestablished")
+        else:
+            print("Connection is still valid, no reconnect needed")
+                
     def execute_query(self, query: str, params: Optional[tuple] = None) -> List[Dict]:
         # Execute SELECT query and return results
+        self.reconnect()
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -44,6 +81,7 @@ class MySQLHandler:
     
     def execute_non_query(self, query: str, params: Optional[tuple] = None) -> int:
         # Execute INSERT, UPDATE, DELETE query and return row count
+        self.reconnect()
         try:
             if params:
                 self.cursor.execute(query, params)
@@ -92,10 +130,11 @@ class MySQLHandler:
         return self.execute_non_query(query, params)
     
     def upsert_record(self, table_name: str, data: Dict[str, Any]) -> int:
-        columns = ', '.join(data.keys())
+        columns = ', '.join(data.keys())  # 'name, age, city'
+        values = list(data.values())   # ['John', 30, 'New York']
         placeholders = ', '.join(['%s' for _ in data])
         query = f"REPLACE INTO {table_name} ({columns}) VALUES ({placeholders})"
-        self.execute_non_query(query, tuple(data.values()))
+        self.execute_non_query(query, values)
     
     def delete_record(self, table_name: str, where_clause: str,
                      where_params: tuple) -> int:
@@ -162,9 +201,11 @@ class MySQLHandler:
         self.execute_non_query("START TRANSACTION")
     
     def commit_transaction(self) -> None:
+        self.reconnect()
         self.connection.commit()
     
     def rollback_transaction(self) -> None:
+        self.reconnect()
         self.connection.rollback()
     
     def get_connection_info(self) -> Dict:
