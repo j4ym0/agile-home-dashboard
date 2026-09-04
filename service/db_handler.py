@@ -60,89 +60,59 @@ class DBHandler:
     
     def create_table(self, table_name: str, columns: Dict[str, str], 
                     primary_key: str = 'id') -> None:
-        if not is_connected():
-            self.connect()
         self.handler.create_table(table_name, columns, primary_key)
     
     def drop_table(self, table_name: str) -> None:
-        if not is_connected():
-            self.connect()
         self.handler.drop_table(table_name)
     
     def insert(self, table_name: str, data: Dict[str, Any]) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.insert_record(table_name, data)
     
     def insert_many(self, table_name: str, data_list: List[Dict[str, Any]]) -> List[int]:
-        if not is_connected():
-            self.connect()
         return self.handler.insert_many(table_name, data_list)
     
     def update(self, table_name: str, data: Dict[str, Any],
               where_clause: str, where_params: tuple) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.update_record(table_name, data, where_clause, where_params)
     
     def upsert(self, table_name: str, data: Dict[str, Any]) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.upsert_record(table_name, data)
     
     def delete(self, table_name: str, where_clause: str, 
                where_params: tuple) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.delete_record(table_name, where_clause, where_params)
     
     def select(self, table_name: str, columns: List[str] = None,
               where_clause: str = None, where_params: tuple = None,
               order_by: str = None, limit: int = None,
               offset: int = None) -> List[Dict]:
-        if not is_connected():
-            self.connect()
         return self.handler.select_records(table_name, columns, where_clause,
                                           where_params, order_by, limit, offset)
     
     def get_by_id(self, table_name: str, record_id: int, 
                  id_column: str = 'id') -> Optional[Dict]:
-        if not is_connected():
-            self.connect()
         return self.handler.get_by_id(table_name, record_id, id_column)
     
     def count(self, table_name: str, where_clause: str = None,
              where_params: tuple = None) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.count_records(table_name, where_clause, where_params)
     
     def exists(self, table_name: str, where_clause: str,
               where_params: tuple) -> bool:
-        if not is_connected():
-            self.connect()
         return self.handler.exists(table_name, where_clause, where_params)
     
     def create_index(self, table_name: str, index_name: str, 
                     columns: List[str], unique: bool = False) -> None:
-        if not is_connected():
-            self.connect()
         self.handler.create_index(table_name, index_name, columns, unique)
     
     def execute_raw_query(self, query: str, params: Optional[tuple] = None) -> List[Dict]:
-        if not is_connected():
-            self.connect()
         return self.handler.execute_query(query, params)
     
     def execute_raw_non_query(self, query: str, params: Optional[tuple] = None) -> int:
-        if not is_connected():
-            self.connect()
         return self.handler.execute_non_query(query, params)
     
     def vacuum(self) -> None:
         # Optimize SQLite database
-        if not is_connected():
-            self.connect()
         if self.db_type == 'sqlite':
             self.handler.vacuum()
         else:
@@ -150,8 +120,6 @@ class DBHandler:
     
     def optimize_table(self, table_name: str) -> None:
         # Optimize MySQL table
-        if not is_connected():
-            self.connect()
         if self.db_type == 'mysql':
             self.handler.optimize_table(table_name)
         else:
@@ -159,8 +127,6 @@ class DBHandler:
     
     def get_connection_info(self) -> Dict:
         # Get connection information
-        if not is_connected():
-            self.connect()
         if self.db_type == 'mysql':
             return self.handler.get_connection_info()
         else:
@@ -172,20 +138,10 @@ class DBHandler:
     
     def is_connected(self) -> bool:
         # Check if connected to database
-        if self.handler.connection is None:
-            return False
-        
         if self.db_type == 'sqlite':
-            try:
-                self.handler.cursor.execute("SELECT 1")
-                return True
-            except Exception:
-                return False
+            return self.handler.connection is not None
         else:
-            try:
-                return self.handler.connection.is_connected()
-            except Exception:
-                return False
+            return self.handler.connection is not None and self.handler.connection.is_connected()
 
     def getTariffData(self, product_code: str, tariff_code: str, UTC_valid_from: str, UTC_valid_to: str, check_count: int = -1) -> List[Dict]:
         ret = {}
