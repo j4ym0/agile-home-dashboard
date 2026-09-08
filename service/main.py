@@ -84,7 +84,7 @@ class ScheduledService:
                     logger.debug(f"background gathering not enabled")
                 else:
 
-                    if Settings.save_tariff_data or save_standard_tariff_data or settings.save_consumption_data:
+                    if Settings.save_tariff_data or save_standard_tariff_data or Settings.save_consumption_data:
                         logger.info(f"Init Cotopus")
                         octopus = Octopus(_db)
                     else:
@@ -98,7 +98,7 @@ class ScheduledService:
 
                     if Settings.save_standard_tariff_data:
                         logger.info(f"Fetching standard tariff data from Octopus API")
-                        octopus.getStandardTariff(Settingselectricity_tariff_code)
+                        octopus.getStandardTariff(Settings.electricity_tariff_code)
                     else:
                         logger.debug(f"Save standard tariff data to database not enabled")
 
