@@ -62,9 +62,6 @@ class MySQLHandler:
             # Create new connection
             self.connect()
             self.cursor = self.connection.cursor(dictionary=True)
-            print("MySQL connection reestablished")
-        else:
-            print("Connection is still valid, no reconnect needed")
                 
     def execute_query(self, query: str, params: Optional[tuple] = None) -> List[Dict]:
         # Execute SELECT query and return results
@@ -77,7 +74,6 @@ class MySQLHandler:
             return self.cursor.fetchall()
         except Error as e:
             raise Exception(f"MySQL query error: {e}")
-            raise
     
     def execute_non_query(self, query: str, params: Optional[tuple] = None) -> int:
         # Execute INSERT, UPDATE, DELETE query and return row count
@@ -90,9 +86,9 @@ class MySQLHandler:
             self.connection.commit()
             return self.cursor.rowcount
         except Error as e:
-            raise Exception(f"MySQL non-query error: {e}")
+            #print(query, params, flush=True)
             self.connection.rollback()
-            raise
+            raise Exception(f"MySQL non-query error: {e}")
     
     def create_table(self, table_name: str, columns: Dict[str, str], 
                     primary_key: str = 'id') -> None:
