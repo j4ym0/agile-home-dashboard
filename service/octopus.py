@@ -225,9 +225,9 @@ class Octopus:
 
         # Default if blank
         if intervalStart == '':
-            intervalStart = f"{datetime.now().strftime("%Y-%m-%d")} 00:00:00"
+            intervalStart = f"{(datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")} 00:00:00"
         if intervalEnd == '':
-            intervalEnd = f"{(datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d")} 23:59:59"
+            intervalEnd = f"{datetime.now().strftime("%Y-%m-%d")} 23:59:59"
 
         # Convert the datetime string to the ISO 8601 format
         intervalStart = tools.parse_datetime(intervalStart, Config.get('app.timezone', 'UTC'))
