@@ -91,7 +91,7 @@ class ScheduledService:
                         logger.debug(f"All save settings are disabled")
 
                     if Settings.save_tariff_data:
-                        logger.info(f"Fetchign tariff data from Octopus API")
+                        logger.info(f"Fetching tariff data from Octopus API")
                         octopus.getTariffData(Settings.electricity_product_code, Settings.electricity_tariff_code)
                     else:
                         logger.debug(f"Save tariff data to database not enabled")
