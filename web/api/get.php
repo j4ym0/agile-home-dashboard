@@ -228,7 +228,9 @@ function tuya_device_list(){
 
     try{
         $tuya = new Tuya($db, $settings);
-        $ret['devices'] = $tuya->getDeviceList();
+        $device_list = sortByColumn($tuya->getDeviceList(), 'name', 'asc', SORT_STRING);
+        $device_list = sortByColumn($device_list, 'online', 'desc', SORT_BOOL);
+        $ret['devices'] = $device_list;
     }catch (Exception $e){
         $ret['error'] = true;
         $ret['message'] = $e->getMessage();

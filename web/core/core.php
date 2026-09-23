@@ -1,4 +1,5 @@
 <?php
+define('SORT_BOOL', 1 << 20);
 
 // Start secure session
 function secure_session_start($session_name, $secureCookie, $httpOnly) {
@@ -111,4 +112,34 @@ function getDateTimeWithTimezone($datetime) {
     } else {
         return new DateTime($datetime, new DateTimeZone('UTC'));
     }
-}   
+} 
+
+function sortByColumn(array $array, string $column, string $direction = 'asc', int $flags = SORT_REGULAR): array
+{
+    $direction = strtolower($direction) === 'desc' ? -1 : 1;
+
+    usort($array, function ($a, $b) use ($column, $direction, $flags) {
+        $valA = $a[$column] ?? null;
+        $valB = $b[$column] ?? null;
+
+        if ($flags === SORT_BOOL) {
+            $result = ((int)(bool)$valA) <=> ((int)(bool)$valB);
+        } elseif ($flags === SORT_STRING) {
+            $result = strcmp((string)$valA, (string)$valB);
+        } elseif ($flags === SORT_NUMERIC) {
+            $result = ((float)$valA <=> (float)$valB);
+        } elseif ($flags === SORT_NATURAL) {
+            $result = strnatcmp((string)$valA, (string)$valB);
+        } elseif ($flags === (SORT_NATURAL | SORT_FLAG_CASE)) {
+            $result = strnatcasecmp((string)$valA, (string)$valB);
+        } elseif ($flags === (SORT_STRING | SORT_FLAG_CASE)) {
+            $result = strcasecmp((string)$valA, (string)$valB);
+        } else {
+            $result = $valA <=> $valB;
+        }
+
+        return $result * $direction;
+    });
+
+    return $array;
+}
