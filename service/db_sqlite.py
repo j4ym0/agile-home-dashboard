@@ -55,11 +55,18 @@ class SQLiteHandler:
         columns_sql = ', '.join([f"{col_name} {col_type}" for col_name, col_type in columns.items()])
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({primary_key} INTEGER PRIMARY KEY AUTOINCREMENT, {columns_sql})"
         self.execute_non_query(query)
-    
+
     def drop_table(self, table_name: str) -> None:
         query = f"DROP TABLE IF EXISTS {table_name}"
         self.execute_non_query(query)
     
+    def table_exists(self, table_name):
+        self.cursor.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1",
+            (table_name,)
+        )
+        return self.cursor.fetchone() is not None
+
     def insert_record(self, table_name: str, data: Dict[str, Any]) -> int:
         columns = ', '.join(data.keys())
         placeholders = ', '.join(['?' for _ in data])

@@ -103,6 +103,14 @@ class MySQLHandler:
         query = f"DROP TABLE IF EXISTS {table_name}"
         self.execute_non_query(query)
     
+    def table_exists(self, table_name):
+        self.cursor.execute(
+            "SELECT 1 FROM information_schema.tables "
+            "WHERE table_schema = DATABASE() AND table_name = %s LIMIT 1",
+            (table_name,)
+        )
+        return self.cursor.fetchone() is not None
+
     def insert_record(self, table_name: str, data: Dict[str, Any]) -> int:
         columns = ', '.join(data.keys())
         placeholders = ', '.join(['%s' for _ in data])

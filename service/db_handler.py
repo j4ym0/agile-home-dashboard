@@ -24,6 +24,9 @@ class DBHandler:
         
         self.handler.connect()
 
+        if not self.table_exists('settings'):
+            self.create_db_structure()
+
         # TODO later versions were db needs changing
         # self.handler.upgrade()
     
@@ -58,6 +61,66 @@ class DBHandler:
         # Upgrade the database
         # Nothing to do yet but later if we need to add
     
+    def create_db_structure(self) ->  None : 
+        auto_inc = 'AUTOINCREMENT'
+        if self.db_type == 'mysql':
+            auto_inc = 'AUTO_INCREMENT'
+
+        tables = {
+            'users': f"""
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY {auto_inc},
+                    username VARCHAR(50) NOT NULL,
+                    password_hash VARCHAR(255) NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_login TIMESTAMP NULL,
+                    token VARCHAR(64) NULL,
+                    token_expires DATETIME NULL
+                );
+            """,
+            'settings': """
+                CREATE TABLE IF NOT EXISTS settings (
+                    setting_key VARCHAR(50) UNIQUE NOT NULL,
+                    setting_value VARCHAR(255) NOT NULL
+                );
+            """,
+            'tariff_data': """
+                CREATE TABLE IF NOT EXISTS tariff_data (
+                    product_code VARCHAR(50) NOT NULL,
+                    tariff_code VARCHAR(50) NOT NULL,
+                    valid_from DATETIME NOT NULL,
+                    valid_to DATETIME,
+                    value_inc_vat DECIMAL(10, 4),
+                    value_exc_vat DECIMAL(10, 4),
+                    PRIMARY KEY (tariff_code, valid_from)
+                );
+            """,
+            'standard_tariff_data': """
+                CREATE TABLE IF NOT EXISTS standard_tariff_data (
+                    product_code VARCHAR(50) NOT NULL,
+                    tariff_code VARCHAR(50) NOT NULL,
+                    valid_from DATETIME NOT NULL,
+                    valid_to DATETIME,
+                    value_inc_vat DECIMAL(10, 4),
+                    value_exc_vat DECIMAL(10, 4),
+                    PRIMARY KEY (tariff_code, valid_from)
+                );
+            """,
+            'consumption_data': """
+                CREATE TABLE IF NOT EXISTS consumption_data (
+                    meter_mpan VARCHAR(50) NOT NULL,
+                    meter_serial VARCHAR(50) NOT NULL,
+                    consumption DECIMAL(10, 4),
+                    interval_start DATETIME NOT NULL,
+                    interval_end DATETIME NOT NULL,
+                    PRIMARY KEY (meter_mpan, meter_serial, interval_start)
+                );
+            """,
+        }
+
+        for table_name, sql in tables.items():
+            self.handler.execute_query(sql)
+                
     def create_table(self, table_name: str, columns: Dict[str, str], 
                     primary_key: str = 'id') -> None:
         self.handler.create_table(table_name, columns, primary_key)
@@ -101,6 +164,9 @@ class DBHandler:
               where_params: tuple) -> bool:
         return self.handler.exists(table_name, where_clause, where_params)
     
+    def table_exists(self, table_name):
+        return self.handler.table_exists(table_name)
+
     def create_index(self, table_name: str, index_name: str, 
                     columns: List[str], unique: bool = False) -> None:
         self.handler.create_index(table_name, index_name, columns, unique)
