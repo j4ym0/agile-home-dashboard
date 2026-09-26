@@ -77,6 +77,9 @@ You can easily customise settings like the database connection and enable login 
 Have a look at the [Smartlife and Tuya Wiki](https://github.com/j4ym0/agile-home-dashboard/wiki/Smartlife-and-Tuya) page on how to setup an account and add you API keys.
 You can control devices from the Devices tab once configured and also if the device supports it view the realtime energy usage.
 
+## Data Butler
+The data butler is a python service that runs in the docker container. This service when enabled collects data in the background, downloading the tariff date and consumption data from the Octopus API. You must enable the Data Butler in settings and enable "Save tariff data to database" or "Save consumption data to database".
+
 ## TODO
 
  - More smartlife support
