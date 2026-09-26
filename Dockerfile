@@ -44,8 +44,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chown -R www-data:www-data /service \
     && chown -R www-data:www-data /database \
     && chown -R www-data:www-data /var/log/apache2 \
-    && chmod 755 /var/log/apache2 \
-    && mv /var/www/html/htaccess /var/www/html/.htaccess
+    && chmod 755 /var/log/apache2 
 
 EXPOSE 80
 
