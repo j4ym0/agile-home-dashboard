@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*' # Triggers on tags like v0.3.0
+      - 'v*.*.*'
   pull_request:
     branches:
       - main
@@ -14,13 +14,16 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   DOCKERHUB_IMAGE: j4ym0/agile-home-dashboard
+  # Forces full build logs so we can see exactly which RUN step fails
+  BUILDKIT_PROGRESS: plain
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    # Pinned to 24.04 to avoid the ubuntu-latest -> 26.04 migration warning
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-      packages: write # Required to push to GHCR
+      packages: write
 
     steps:
       - name: Checkout repository
@@ -49,23 +52,15 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          # Generates tags for both Docker Hub and GHCR
           images: |
             ${{ env.DOCKERHUB_IMAGE }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          # Define the tagging strategy
           tags: |
-            # Set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
-            # Tag with SemVer when a Git tag is pushed (e.g., v0.3.0 -> 0.3.0)
             type=semver,pattern={{version}}
-            # Tag with major.minor (e.g., v0.3.0 -> 0.3)
             type=semver,pattern={{major}}.{{minor}}
-            # Tag with major only (e.g., v0.3.0 -> 0)
             type=semver,pattern={{major}}
-            # Tag with branch name for non-release builds
             type=ref,event=branch
-            # Tag with PR number for pull requests
             type=ref,event=pr
 
       - name: Build and push Docker image
@@ -73,7 +68,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          # Matches your manual multi-platform build command
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7,linux/arm/v6
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
