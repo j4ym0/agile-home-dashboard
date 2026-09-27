@@ -48,7 +48,7 @@ class SQLiteHandler:
             return self.cursor.rowcount
         except sqlite3.Error as e:
             self.connection.rollback()
-            raise exception(f"SQLite non-query error: {e}")
+            raise Exception(f"SQLite non-query error: {e}")
     
     def create_table(self, table_name: str, columns: Dict[str, str], 
                     primary_key: str = 'id') -> None:
@@ -90,7 +90,7 @@ class SQLiteHandler:
     
     def upsert_record(self, table_name: str, data: Dict[str, Any]) -> int:
         columns = ', '.join(data.keys())
-        placeholders = ', '.join(['%s' for _ in data])
+        placeholders = ', '.join(['?' for _ in data])
         query = f"INSERT OR REPLACE INTO {table_name} ({columns}) VALUES ({placeholders})"
         self.execute_non_query(query, tuple(data.values()))
     
