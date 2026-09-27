@@ -4,20 +4,15 @@ on:
   push:
     tags:
       - 'v*.*.*'
-  pull_request:
-    branches:
-      - main
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   DOCKERHUB_IMAGE: j4ym0/agile-home-dashboard
-  # Forces full build logs so we can see exactly which RUN step fails
   BUILDKIT_PROGRESS: plain
 
 jobs:
   build-and-push:
-    # Pinned to 24.04 to avoid the ubuntu-latest -> 26.04 migration warning
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -54,13 +49,10 @@ jobs:
             ${{ env.DOCKERHUB_IMAGE }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            # Pushing v0.3.0 produces: v0.3.0, v0.3, v0, and latest
             type=semver,pattern=v{{version}}
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
-            # PR builds get a pr-<number> tag for testing
-            type=ref,event=pr
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -68,7 +60,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/386,linux/arm64,linux/arm/v7,linux/arm/v6
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
