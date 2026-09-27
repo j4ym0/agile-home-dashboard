@@ -27,8 +27,7 @@ class DBHandler:
         if not self.table_exists('settings'):
             self.create_db_structure()
 
-        # TODO later versions were db needs changing
-        # self.handler.upgrade()
+        self.upgrade()
     
     def __enter__(self):
         # Context manager
@@ -57,9 +56,13 @@ class DBHandler:
     def rollback_transaction(self) -> None:
         self.handler.rollback_transaction()
 
-#    def upgrade() ->  None : 
-        # Upgrade the database
-        # Nothing to do yet but later if we need to add
+    def upgrade(self) ->  None : 
+        current_version = self.database_version()
+
+        if current_version < 0 :
+            raise Exception("DB Fault, unable to check db version")
+        else:
+            self.handler.upgarde(current_version)
     
     def create_db_structure(self) ->  None : 
         auto_inc = 'AUTOINCREMENT'
@@ -166,6 +169,16 @@ class DBHandler:
     
     def table_exists(self, table_name):
         return self.handler.table_exists(table_name)
+
+    def database_version(self):
+        if not self.handler.table_exists("settings"):
+            return -1
+        
+        rows = self.select("settings", ["setting_value"], "setting_key = ?" , ["database_version"], None, 1)
+        if rows:
+            return int(rows[0]["setting_value"])
+
+        return 0
 
     def create_index(self, table_name: str, index_name: str, 
                     columns: List[str], unique: bool = False) -> None:

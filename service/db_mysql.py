@@ -63,6 +63,15 @@ class MySQLHandler:
             self.connect()
             self.cursor = self.connection.cursor(dictionary=True)
                 
+    def upgarde(self, current_version: int):
+        self.reconnect()
+        #if current_version < 1:
+        #    self.cursor.execute("""
+        #    """)
+        #    self.upsert_record("settings", {"setting_key": "database_version", "setting_value": "1"})
+
+        self.connection.commit()
+
     def execute_query(self, query: str, params: Optional[tuple] = None) -> List[Dict]:
         # Execute SELECT query and return results
         self.reconnect()
