@@ -87,6 +87,7 @@ The data butler is a python service that runs in the docker container. This serv
  - Price triggers for smartlife
  - import meter data 
  - Multiple reports
+ - Grid Inspect
 
 ## Issues and features 
 
